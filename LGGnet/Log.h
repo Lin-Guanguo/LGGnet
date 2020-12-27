@@ -7,7 +7,7 @@
 namespace LGG
 {
 
-typedef std::ostream Ostream;
+typedef std::ostream Ostream;   //暂时工程
 
 namespace LogSetting {
     enum LogLevel{
@@ -30,7 +30,7 @@ class LogStream : Noncopyable {
     template<typename T>
     LogStream& operator<< (const T& t) {
         if(level_ >= LogSetting::G_LOG_LEVEL){
-            stream_ << t;
+            stream_ << t; 
         }
         return *this;
     }
