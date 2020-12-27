@@ -4,6 +4,7 @@
 #include "Noncopyable.h"
 #include "Thread.h"
 #include <pthread.h>
+#include <cassert>
 
 namespace LGG
 {
@@ -16,6 +17,8 @@ class EventLoop : Noncopyable {
     ~EventLoop();
 
     void loop();
+
+    void assertInLoopThread() const { assert( isInLoopThread() ); }
 
     bool isInLoopThread() const { return threadId_ == CurrentThread::id(); } 
 
