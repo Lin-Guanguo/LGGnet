@@ -13,5 +13,4 @@ class Noncopyable {
 
 }//end LGG
 
-
 #endif
