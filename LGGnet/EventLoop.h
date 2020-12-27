@@ -2,6 +2,7 @@
 #define LGGNET_EVENTLOOP
 
 #include "Noncopyable.h"
+#include "Thread.h"
 #include <pthread.h>
 
 namespace LGG
@@ -16,12 +17,12 @@ class EventLoop : Noncopyable {
 
     void loop();
 
-    bool isInLoopThread() const { return threadId_ == 0; } //
+    bool isInLoopThread() const { return threadId_ == CurrentThread::id(); } 
 
   private:
     
 };
 
-}//end LGG
+} // namespace LGG
 
 #endif
