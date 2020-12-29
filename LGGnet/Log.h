@@ -3,6 +3,7 @@
 
 #include "Noncopyable.h"
 #include "StaticClass.h"
+#include "Format.h"
 #include <string_view>
 
 namespace LGG
