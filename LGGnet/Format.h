@@ -17,6 +17,9 @@ class Format : StaticClass{
     }
     
     static void formatData(int i, std::string& str) { str.append(std::to_string(i)); }
+    static void formatData(long i, std::string& str) { str.append(std::to_string(i)); }
+    static void formatData(long long i, std::string& str) { str.append(std::to_string(i)); }
+    static void formatData(unsigned long i, std::string& str) { str.append(std::to_string(i)); }
     static void formatData(double i, std::string& str) { str.append(std::to_string(i)); }
     static void formatData(const char* cstr, std::string& str) { str.append(cstr); }
     static void formatData(void* ptr, std::string& str) { str.append(std::to_string((long)ptr)); }

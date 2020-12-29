@@ -1,12 +1,14 @@
 #include "EventLoop.h"
 #include "Log.h"
+#include <poll.h>
 
 using namespace LGG;
 
 __thread EventLoop* loopInThisThread_t = nullptr;
 
 EventLoop::EventLoop() 
-  : threadId_(CurrentThread::threadId()) 
+  : threadId_(CurrentThread::threadId()),
+    looping_(false) 
 {
     LOG_TRACE("EventLoop creart ", this, " in thread ", threadId_)
 	if(loopInThisThread_t == nullptr){
@@ -21,5 +23,18 @@ EventLoop::~EventLoop() {
 }
 
 void EventLoop::loop() {
+	assert(!looping_);
+	assertInLoopThread();
+	looping_ = true;
+
+	::poll(NULL, 0, 5000);
+
 	LOG_TRACE("EventLoop ", this, " loop start")
+}
+
+void EventLoop::assertInLoopThread() {
+	if(!isInLoopThread()){
+		LOG_FATAL("assertInLoopThread == false thread ", threadId_, "!=" , CurrentThread::threadId());
+		assert(isInLoopThread);
+	}
 }

@@ -9,7 +9,8 @@ namespace LGG
 {
 
 class EventLoop : Noncopyable {
-    const pid_t threadId_;
+    const pthread_t threadId_;
+    bool looping_;
   public:
     EventLoop();
 
@@ -17,7 +18,7 @@ class EventLoop : Noncopyable {
 
     void loop();
 
-    void assertInLoopThread() const { assert( isInLoopThread() ); }
+    void assertInLoopThread();
 
     bool isInLoopThread() const { return threadId_ == CurrentThread::threadId(); } 
 
