@@ -1,7 +1,6 @@
 #ifndef LGGNET_LOG
 #define LGGNET_LOG
 
-#include "Noncopyable.h"
 #include "StaticClass.h"
 #include "Format.h"
 #include <string_view>
