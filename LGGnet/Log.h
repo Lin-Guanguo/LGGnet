@@ -3,6 +3,7 @@
 
 #include "StaticClass.h"
 #include "Format.h"
+#include "functional"
 #include <string_view>
 
 namespace LGG
@@ -19,7 +20,7 @@ class LogSetting : StaticClass {
         FATAL,
         NUM_LOG_LEVELS,
     };
-    using LogFunction = void(*)(std::string_view);
+    using LogFunction = std::function<void(std::string_view)>;
 
     static void setG_LOG_LEVEL(LogLevel newLevel) { G_LOG_LEVEL = newLevel; }
     static LogLevel getG_LOG_LEVEL() { return G_LOG_LEVEL; }
@@ -33,7 +34,7 @@ class LogSetting : StaticClass {
 
 #define LGG_LOG_DEFINE_TEMPLATE(LOGLEVEL, LEVEL_NAME, ...) { \
     if(LGG::LogSetting::getG_LOG_LEVEL() <= LGG::LogSetting::LOGLEVEL) \
-        (*LGG::LogSetting::getG_LOG_FUNCTION())(LGG::Format::format(LEVEL_NAME, " file=", __FILE__, ", line=", __LINE__ , ": ", __VA_ARGS__, "\n"));}
+        LGG::LogSetting::getG_LOG_FUNCTION()(LGG::Format::format(LEVEL_NAME, " file=", __FILE__, ", line=", __LINE__ , ": ", __VA_ARGS__, "\n"));}
 
 #define LOG_TRACE(...) LGG_LOG_DEFINE_TEMPLATE(TRACE, "TRACE", __VA_ARGS__)
 #define LOG_DEBUG(...) LGG_LOG_DEFINE_TEMPLATE(DEBUG, "DEBUG", __VA_ARGS__)
