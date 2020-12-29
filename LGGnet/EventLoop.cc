@@ -7,8 +7,7 @@ using namespace LGG;
 __thread EventLoop* loopInThisThread_t = nullptr;
 
 EventLoop::EventLoop() 
-  : threadId_(CurrentThread::threadId()),
-    looping_(false) 
+  : threadId_(CurrentThread::threadId())
 {
     LOG_TRACE("EventLoop creart ", this, " in thread ", threadId_)
 	if(loopInThisThread_t == nullptr){
@@ -23,9 +22,7 @@ EventLoop::~EventLoop() {
 }
 
 void EventLoop::loop() {
-	assert(!looping_);
 	assertInLoopThread();
-	looping_ = true;
 
 	::poll(NULL, 0, 5000);
 
@@ -35,6 +32,6 @@ void EventLoop::loop() {
 void EventLoop::assertInLoopThread() {
 	if(!isInLoopThread()){
 		LOG_FATAL("assertInLoopThread == false thread ", threadId_, "!=" , CurrentThread::threadId());
-		assert(isInLoopThread);
+		assert(isInLoopThread());
 	}
 }

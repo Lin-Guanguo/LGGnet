@@ -10,7 +10,6 @@ namespace LGG
 
 class EventLoop : Noncopyable {
     const pthread_t threadId_;
-    bool looping_;
   public:
     EventLoop();
 
