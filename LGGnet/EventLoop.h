@@ -17,6 +17,7 @@ class EventLoop : Noncopyable {
 
     void loop();
 
+    //Eventloop创建线程，和启动线程必须一致
     void assertInLoopThread();
 
     bool isInLoopThread() const { return threadId_ == CurrentThread::threadId(); } 

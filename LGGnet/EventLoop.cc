@@ -15,7 +15,7 @@ EventLoop::EventLoop()
 	}else{
 		LOG_FATAL("Another EventLoop ", loopInThisThread_t, " exists in this this thread ", threadId_ );
 	}
-};
+}
 
 EventLoop::~EventLoop() {
 	loopInThisThread_t = nullptr;
