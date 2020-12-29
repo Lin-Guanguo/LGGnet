@@ -1,12 +1,13 @@
 #ifndef LGGNET_FORMATIO
 #define LGGNET_FORMATIO
 
+#include "StaticClass.h"
 #include <string>
 
 namespace LGG
 {
 
-class FormatIO{
+class FormatIO : StaticClass{
   public:
     FormatIO() = delete;
     template<typename... T>

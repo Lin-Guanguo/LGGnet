@@ -2,12 +2,13 @@
 #define LGGNET_LOG
 
 #include "Noncopyable.h"
+#include "StaticClass.h"
 #include <string_view>
 
 namespace LGG
 {
 
-class LogSetting {
+class LogSetting : StaticClass {
   public:
     LogSetting() = delete;
     enum LogLevel{
