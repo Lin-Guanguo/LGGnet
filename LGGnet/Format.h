@@ -7,9 +7,9 @@
 namespace LGG
 {
 
-class FormatIO : StaticClass{
+class Format : StaticClass{
   public:
-    FormatIO() = delete;
+    Format() = delete;
     template<typename... T>
     static std::string toString(T... args){
         std::string s;
