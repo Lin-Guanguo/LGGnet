@@ -34,7 +34,7 @@ class LogSetting : StaticClass {
 
 #define LGG_LOG_DEFINE_TEMPLATE(LOGLEVEL, LEVEL_NAME, ...) { \
     if(LGG::LogSetting::getG_LOG_LEVEL() <= LGG::LogSetting::LOGLEVEL) \
-        LGG::LogSetting::getG_LOG_FUNCTION()(LGG::Format::format(LEVEL_NAME, " file=", __FILE__, ", line=", __LINE__ , ": ", __VA_ARGS__, "\n"));}
+        LGG::LogSetting::getG_LOG_FUNCTION()(LGG::Format::concatToString(LEVEL_NAME, " file=", __FILE__, ", line=", __LINE__ , ": ", __VA_ARGS__, "\n"));}
 
 #define LOG_TRACE(...) LGG_LOG_DEFINE_TEMPLATE(TRACE, "TRACE", __VA_ARGS__)
 #define LOG_DEBUG(...) LGG_LOG_DEFINE_TEMPLATE(DEBUG, "DEBUG", __VA_ARGS__)
