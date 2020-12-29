@@ -12,6 +12,8 @@ class Format : StaticClass{
     template<typename... T>
     static std::string concatToString(T... args){
         std::string s;
+        constexpr int AVERAGE_ARG_LEN = 20;
+        s.reserve(AVERAGE_ARG_LEN * sizeof...(args));
         (concat(args, s), ...);
         return std::move(s);
     }
