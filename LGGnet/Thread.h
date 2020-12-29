@@ -1,18 +1,19 @@
 #ifndef LGGNET_THREAD
 #define LGGNET_THREAD
 
+#include "StaticClass.h"
 #include <pthread.h>
 
 namespace LGG
 {
 
-class Thread {
-
+class CurrentThread : StaticClass {
+  public:
+    static pthread_t threadId() {
+        return pthread_self();
+    }
+    
 };
-
-namespace CurrentThread {
-    pthread_t id() { return pthread_self(); }
-}
     
 } // namespace LGG
  
