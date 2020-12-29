@@ -24,8 +24,8 @@ class LogSetting : StaticClass {
 
     static void setG_LOG_LEVEL(LogLevel newLevel) { G_LOG_LEVEL = newLevel; }
     static LogLevel getG_LOG_LEVEL() { return G_LOG_LEVEL; }
-    static LogFunction getG_LOG_FUNCTION() { return G_LOG_FUNCTION; }
     static void setG_LOG_FUNCTION(LogFunction fun) { G_LOG_FUNCTION = fun; }
+    static LogFunction getG_LOG_FUNCTION() { return G_LOG_FUNCTION; }
 
   private:
     static LogLevel G_LOG_LEVEL;
