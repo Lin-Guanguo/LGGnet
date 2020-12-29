@@ -11,7 +11,7 @@ class Format : StaticClass{
   public:
     Format() = delete;
     template<typename... T>
-    static std::string toString(T... args){
+    static std::string format(T... args){
         std::string s;
         (formatData(args, s), ...);
         return std::move(s);
