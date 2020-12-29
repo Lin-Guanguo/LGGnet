@@ -10,7 +10,6 @@ namespace LGG
 
 class LogSetting : StaticClass {
   public:
-    LogSetting() = delete;
     enum LogLevel{
         TRACE,
         DEBUG,
