@@ -4,9 +4,12 @@
 #include "../tool/Noncopyable.h"
 #include "../tool/Thread.h"
 #include <cassert>
+#include <memory>
+
 
 namespace LGG
 {
+class Channel;
 
 class EventLoop : Noncopyable {
     const pthread_t threadId_;
@@ -21,6 +24,8 @@ class EventLoop : Noncopyable {
     void assertInLoopThread();
 
     bool isInLoopThread() const { return threadId_ == CurrentThread::threadId(); } 
+
+    void addChannel(std::unique_ptr<Channel> channelptr) {};
 
   private:
     
