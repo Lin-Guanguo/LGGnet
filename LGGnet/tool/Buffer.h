@@ -28,16 +28,26 @@ class Buffer {
         return this->read(buf_.size());
     }
 
-    std::string seek(size_type len) {
+    std::string seek(size_type len) const {
         std::string res;
         res.reserve(len);
         std::move(buf_.begin(), buf_.begin() + len, std::back_insert_iterator(res));
         return res;
     }
 
+    void writePre(std::string_view str) {
+        std::copy(str.rbegin(), str.rend(), std::front_insert_iterator(buf_));
+    }
+
     void write(std::string_view str) {
         std::copy(str.begin(), str.end(), std::back_insert_iterator(buf_));
     }
+
+    ssize_t writefd(int fd);
+
+    size_type readableSize() const { return buf_.size(); }
+
+    
 };
 
 } // namespace LGG
