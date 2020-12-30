@@ -14,6 +14,7 @@ class Channel : Noncopyable {
     static Channel& newChannelAndRegister(EventLoop& loop, int fd);
     static Channel* newChannel(int fd) { return new Channel(fd); }
 
+    //由loop内的unique_ptr管理生命周期
     void registerInLoop(EventLoop& loop);
 
     virtual void readCallBack() {};
