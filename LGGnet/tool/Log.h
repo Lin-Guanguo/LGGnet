@@ -1,5 +1,5 @@
-#ifndef LGGNET_LOG
-#define LGGNET_LOG
+#ifndef LGGNET_TOOL_LOG
+#define LGGNET_TOOL_LOG
 
 #include "StaticClass.h"
 #include "Format.h"

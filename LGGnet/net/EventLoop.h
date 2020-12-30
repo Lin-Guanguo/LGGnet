@@ -1,8 +1,8 @@
-#ifndef LGGNET_EVENTLOOP
-#define LGGNET_EVENTLOOP
+#ifndef LGGNET_NET_EVENTLOOP
+#define LGGNET_NET_EVENTLOOP
 
-#include "Noncopyable.h"
-#include "Thread.h"
+#include "../tool/Noncopyable.h"
+#include "../tool/Thread.h"
 #include <cassert>
 
 namespace LGG

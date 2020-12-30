@@ -1,5 +1,5 @@
-#ifndef LGGNET_FORMATIO
-#define LGGNET_FORMATIO
+#ifndef LGGNET_TOOL_FORMATIO
+#define LGGNET_TOOL_FORMATIO
 
 #include "StaticClass.h"
 #include <string>
