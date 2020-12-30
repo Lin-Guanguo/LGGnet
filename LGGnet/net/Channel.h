@@ -9,16 +9,19 @@ class EventLoop;
     
 class Channel : Noncopyable {
     const int fd_;
-    EventLoop& loop_;
+    bool registered_ = false;
   public:
-    static Channel& newChannel(EventLoop& loop, int fd);
+    static Channel& newChannelAndRegister(EventLoop& loop, int fd);
+    static Channel* newChannel(int fd) { return new Channel(fd); }
+
+    void registerInLoop(EventLoop& loop);
 
     virtual void readCallBack() {};
     virtual void writeCallBack() {};
     virtual void errorCallBack() {};
 
   private:
-    Channel(EventLoop& loop, int fd) : loop_(loop), fd_(fd) {};
+    Channel(int fd) : fd_(fd) {};
     
 };
 

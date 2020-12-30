@@ -4,8 +4,14 @@
 using namespace std;
 using namespace LGG;
 
-Channel& Channel::newChannel(EventLoop& loop, int fd) {
-    auto p = new Channel(loop, fd);
-    loop.addChannel(unique_ptr<Channel>(p));
+Channel& Channel::newChannelAndRegister(EventLoop& loop, int fd) {
+    auto p = new Channel(fd);
+    p->registerInLoop(loop);
     return *p;
+}
+
+void Channel::registerInLoop(EventLoop& loop) {
+    assert(!registered_);
+    loop.addChannel(unique_ptr<Channel>(this));
+    registered_ = true;
 }
