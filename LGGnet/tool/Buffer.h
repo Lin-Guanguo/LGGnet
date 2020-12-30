@@ -4,11 +4,12 @@
 #include <cassert>
 #include <deque>
 #include "Log.h"
+#include "Noncopyable.h"
 
 namespace LGG
 {
 
-class Buffer {
+class Buffer : Noncopyable {
     static constexpr size_t INI_SIZE = 1024;
     using size_type = std::deque<char>::size_type;
 
