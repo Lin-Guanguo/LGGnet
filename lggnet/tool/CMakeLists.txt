@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(${PROJECT_NAME} STATIC
     Buffer.cc
-    Format.cc
-    Log.cc    
 )
 
 target_include_directories(${PROJECT_NAME}
