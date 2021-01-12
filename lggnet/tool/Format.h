@@ -31,7 +31,7 @@ class Format : StaticClass{
     static void concat(void* ptr, std::string& str) { str.append(std::to_string((long)ptr)); }
 
     template<typename... T>
-    void Format::print(T... args){
+    static void print(T... args){
         ::printf("%s", concatToString(std::forward<T>(args)...).data());
     }
   private:
