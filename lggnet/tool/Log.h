@@ -32,6 +32,8 @@ class LogSetting : StaticClass {
     static LogFunction G_LOG_FUNCTION;
 };
 
+#ifndef LOG_CLOSE
+
 #define LGG_LOG_DEFINE_TEMPLATE(LOGLEVEL, LEVEL_NAME, ...) { \
     if(LGG::LogSetting::getG_LOG_LEVEL() <= LGG::LogSetting::LOGLEVEL) \
         LGG::LogSetting::getG_LOG_FUNCTION()(LGG::Format::concatToString(LEVEL_NAME, " file=", __FILE__, ", line=", __LINE__ , ": ", __VA_ARGS__, "\n"));}
@@ -42,6 +44,17 @@ class LogSetting : StaticClass {
 #define LOG_WARN(...) LGG_LOG_DEFINE_TEMPLATE(WARN, "WARN ", __VA_ARGS__)
 #define LOG_ERROR(...) LGG_LOG_DEFINE_TEMPLATE(ERROR, "ERROR", __VA_ARGS__)
 #define LOG_FATAL(...) LGG_LOG_DEFINE_TEMPLATE(FATAL, "FATAL",  __VA_ARGS__)
+
+#else
+
+#define LOG_TRACE(...) {}
+#define LOG_DEBUG(...) {}
+#define LOG_INFO(...) {}
+#define LOG_WARN(...) {}
+#define LOG_ERROR(...) {}
+#define LOG_FATAL(...) {}
+
+#endif
 
 } // namespace LGG
 
