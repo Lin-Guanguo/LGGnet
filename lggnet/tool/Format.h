@@ -3,6 +3,7 @@
 
 #include "StaticClass.h"
 #include <string>
+#include <stdio.h>
 
 namespace LGG
 {
@@ -28,6 +29,11 @@ class Format : StaticClass{
     static void concat(const char* cstr, std::string& str) { str.append(cstr); }
     static void concat(std::string_view cstr, std::string& str) { str.append(cstr); }
     static void concat(void* ptr, std::string& str) { str.append(std::to_string((long)ptr)); }
+
+    template<typename... T>
+    void Format::print(T... args){
+        ::printf("%s", concatToString(std::forward<T>(args)...).data());
+    }
   private:
 };
 
