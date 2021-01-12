@@ -1,8 +1,11 @@
 #include "EventLoop.h"
+#include "Channel.h"
+#include "../tool/Thread.h"
 #include "../tool/Log.h"
 #include <poll.h>
 
 using namespace LGG;
+using namespace std;
 
 __thread EventLoop* loopInThisThread_t = nullptr;
 
@@ -34,4 +37,13 @@ void EventLoop::assertInLoopThread() {
 		LOG_FATAL("assertInLoopThread == false thread ", threadId_, "!=" , CurrentThread::threadId());
 		assert(isInLoopThread());
 	}
+}
+
+bool EventLoop::isInLoopThread() const { 
+    return threadId_ == CurrentThread::threadId(); 
+} 
+
+void EventLoop::addChannel(ChannelPtr channelptr) { 
+    LOG_TRACE("channel ",channelptr.get(), " register in loop ", this); 
+    channelList_.push_back(std::move(channelptr));
 }

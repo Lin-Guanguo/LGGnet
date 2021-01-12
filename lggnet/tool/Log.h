@@ -3,7 +3,7 @@
 
 #include "StaticClass.h"
 #include "Format.h"
-#include "functional"
+#include <functional>
 #include <string_view>
 
 namespace LGG
