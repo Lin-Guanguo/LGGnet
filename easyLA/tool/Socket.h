@@ -9,87 +9,116 @@
 #include <arpa/inet.h>
 #include <string_view>
 #include <string>
+#include <string.h>
 
 namespace LGG
 {
 
-struct SocketAddr {
+class SocketAddr {
+    ::sockaddr_storage addr_;
+  public:
     SocketAddr();
 
-    SocketAddr(std::string_view addr, unsigned short port){
-        addr_.sin_family = AF_INET;
-        ::inet_pton(AF_INET, addr.data(), &addr_.sin_addr);
-        addr_.sin_port = ::htons(port);
+    SocketAddr(int family, std::string_view addr, unsigned short port){
+        this->getPtr()->sa_family = family;
+        switch(family){
+            case AF_INET:{
+                auto p = this->getPtrAsIPV4();
+                ::inet_pton(AF_INET, addr.data(), &p->sin_addr);
+                p->sin_port = ::htons(port);
+            }
+                break;
+            case AF_INET6:{
+                auto p = this->getPtrAsIPV6();
+                ::inet_pton(AF_INET6, addr.data(), &p->sin6_addr);
+                p->sin6_port = ::htons(port);
+            }
+                break;
+            default:
+                LOG_WARN("unkonw domain used, can't init");
+        }
     }
 
-    SocketAddr(const sockaddr_storage* addr){
-        if(((sockaddr*)addr)->sa_family != AF_INET){
-            LOG_FATAL_AND_DIE("connecion TYPE WRONG ", (int)((sockaddr*)addr)->sa_family);
-        }
-        auto ipv4 = (const sockaddr_in*)addr;
-        addr_.sin_family = AF_INET;
-        addr_.sin_addr = ipv4->sin_addr;
-        addr_.sin_port = ipv4->sin_port;
+    SocketAddr(const ::sockaddr_storage& addr){
+        memcpy(&addr_, &addr, sizeof(sockaddr_storage));
     }
 
     sockaddr* getPtr() { return (sockaddr*)&addr_; }
     const sockaddr* getPtr() const { return (const sockaddr*)&addr_; }
 
+    sockaddr_in* getPtrAsIPV4() { return (sockaddr_in*)&addr_; }
+    const sockaddr_in* getPtrAsIPV4() const { return (const sockaddr_in*)&addr_; }
+
+    sockaddr_in6* getPtrAsIPV6() { return (sockaddr_in6*)&addr_; }
+    const sockaddr_in6* getPtrAsIPV6() const { return (const sockaddr_in6*)&addr_; }
+
     socklen_t getLen() const { return sizeof(addr_); }
 
     std::string tostring() const { 
-        assert(addr_.sin_family == AF_INET);
-        char p[100];
-        ::inet_ntop(AF_INET, (const void*)&addr_.sin_addr, p, 100);
-        return Format::concatToString(p, ":", (int)addr_.sin_port);
+        constexpr int bufsize = sizeof(sockaddr_storage);
+        char buf[bufsize];
+        switch(addr_.ss_family){
+            case AF_INET:{
+                auto p = this->getPtrAsIPV4();
+                ::inet_ntop(AF_INET, (const void*)&p->sin_addr, buf, bufsize);
+                return Format::concatToString(buf, ":", p->sin_port);
+            }
+                break;
+            case AF_INET6:{
+                auto p = this->getPtrAsIPV6();
+                ::inet_ntop(AF_INET6, (const void*)&p->sin6_addr, buf, bufsize);
+                return Format::concatToString(buf, ":", p->sin6_port);
+            }
+                break;
+            default:
+                LOG_WARN("unkonw domain used, can't tostring");
+        }
+        return {};
     }
 
-  private:
-    ::sockaddr_in addr_;
 };
     
 class SocketOps : StaticClass {
   public:
     static constexpr int DEFAULT_BACKLOG = 128;
 
-    static int newTCPSocket(){
-        int fd = ::socket(AF_INET, SOCK_STREAM, 0);
-        return fd;
-    }
-
-    static int newUDPSocket(){
-        int fd = ::socket(AF_INET, SOCK_DGRAM, 0);
+    static int newSocket(int domain, int type){
+        LOG_TRACE("new Socket")
+        int fd = ::socket(domain, type, 0);
         return fd;
     }
 
     static int bind(int fd, const SocketAddr& addr){
+        LOG_TRACE("bind")
         int res = ::bind(fd, addr.getPtr(), addr.getLen());
         return res;
     }
 
     static int listen(int fd){
+        LOG_TRACE("listen")
         int res = ::listen(fd, DEFAULT_BACKLOG);
         return res;
     }
 
-    struct acceptRes {
-        int fd;
-        SocketAddr addr;
-    };
-
-    static acceptRes accept(int fd){
-        sockaddr_storage addr;
+    static auto accept(int fd){
+        LOG_TRACE("accept")
+        struct acceptRes {
+            int fd;
+            SocketAddr addr;
+        }res;
         socklen_t len;
-        int clientfd = ::accept(fd, (sockaddr*)&addr, &len);
-        return {clientfd, &addr};
+        res.fd = ::accept(fd, res.addr.getPtr(), &len);
+        return res;
     }
 
     static int close(int fd){
+        LOG_TRACE("close")
         int res = ::close(fd);
         return res;
     }
 
     static int connect(int fd, const SocketAddr& addr){
+        LOG_TRACE("connection")
         int res = ::connect(fd, addr.getPtr(), addr.getLen());
         return res;
     }
