@@ -8,7 +8,7 @@ namespace LGG
 {
 
 class Format : StaticClass{
-  public:
+public:
     template<typename... T>
     static std::string concatToString(T... args){
         std::string s;
@@ -33,7 +33,6 @@ class Format : StaticClass{
     static void print(T... args){
         ::printf("%s", concatToString(std::forward<T>(args)...).data());
     }
-  private:
 };
 
 } // namespace LGG

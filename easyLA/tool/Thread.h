@@ -7,7 +7,7 @@ namespace LGG
 {
 
 class CurrentThread : StaticClass {
-  public:
+public:
     static pthread_t threadId() {
         return ::pthread_self();
     }

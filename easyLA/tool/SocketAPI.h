@@ -10,7 +10,7 @@ namespace LGG
 
 class SocketAddr {
     ::sockaddr_storage addr_;
-  public:
+public:
     SocketAddr() {};
 
     SocketAddr(int family, std::string_view addr, unsigned short port);
@@ -36,7 +36,7 @@ class SocketAddr {
 };
     
 class SocketAPI : StaticClass {
-  public:
+public:
     static constexpr int DEFAULT_BACKLOG = 128;
 
     static int newSocket(int domain, int type);

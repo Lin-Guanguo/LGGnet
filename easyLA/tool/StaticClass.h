@@ -4,7 +4,7 @@ namespace LGG
 {
     
 class StaticClass {
-  public:
+public:
     StaticClass() = delete;
 };
 

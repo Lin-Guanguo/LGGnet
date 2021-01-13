@@ -17,8 +17,6 @@ public:
 
     ~ConnectionSocket() { SocketAPI::close(fd_); };
 
-    ssize_t readFd() { return buf_.writeFromFd(fd_); }
-
     std::string readAll() { return buf_.readAll(); }
 
     std::string read(size_t len) { 
@@ -44,6 +42,9 @@ public:
     void write(std::string_view str){
         ::write(fd_, str.data(), str.size());
     }
+    
+private:
+    ssize_t readFd() { return buf_.writeFromFd(fd_); }
 };
 
 } // namespace LGG

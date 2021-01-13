@@ -4,7 +4,7 @@ namespace LGG
 {
     
 class Noncopyable {
-  public:
+public:
     Noncopyable() = default;
     Noncopyable(const Noncopyable&) = delete;
     Noncopyable& operator= (const Noncopyable&) = delete;

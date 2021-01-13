@@ -13,7 +13,7 @@ class Buffer : Noncopyable {
     using size_type = std::deque<char>::size_type;
 
     std::deque<char> buf_;
-  public:
+public:
     Buffer() : buf_() {}
 
     std::string read(size_type len) {

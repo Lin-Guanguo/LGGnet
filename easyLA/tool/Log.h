@@ -9,7 +9,7 @@ namespace LGG
 {
 
 class LogSetting : StaticClass {
-  public:
+public:
     enum LogLevel{
         TRACE,
         DEBUG,
@@ -29,7 +29,7 @@ class LogSetting : StaticClass {
     static void defaultLogFun(std::string_view str){
         printf("%s", str.data());
     }
-  private:
+private:
     static LogLevel G_LOG_LEVEL;
     static LogFunction G_LOG_FUNCTION;
 };
