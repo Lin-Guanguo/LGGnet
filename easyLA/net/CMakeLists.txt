@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(lggnet_net)
+project(easyLA_net)
 
 set(CMAKE_CXX_STANDARD 17)
 
