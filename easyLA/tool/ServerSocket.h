@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SocketAPI.h"
+#include "Log.h"
 
 namespace LGG
 {
