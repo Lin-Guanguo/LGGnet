@@ -17,7 +17,7 @@ namespace LGG
 class SocketAddr {
     ::sockaddr_storage addr_;
   public:
-    SocketAddr();
+    SocketAddr() {};
 
     SocketAddr(int family, std::string_view addr, unsigned short port){
         this->getPtr()->sa_family = family;
