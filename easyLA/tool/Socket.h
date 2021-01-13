@@ -106,12 +106,14 @@ class SocketOps : StaticClass {
         return res;
     }
 
-    static auto accept(int fd){
+    struct acceptRes {
+        int fd;
+        SocketAddr addr;
+    };
+
+    static acceptRes accept(int fd){
         LOG_TRACE("accept")
-        struct acceptRes {
-            int fd;
-            SocketAddr addr;
-        }res;
+        acceptRes res;
         socklen_t len;
         res.fd = ::accept(fd, res.addr.getPtr(), &len);
         return res;
