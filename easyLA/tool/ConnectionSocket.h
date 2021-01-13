@@ -17,11 +17,13 @@ public:
 
     ~ConnectionSocket() { SocketAPI::close(fd_); };
 
-    std::string readAll() { return buf_.readAll(); }
+    ssize_t readFromSocket() { return buf_.writeFromFd(fd_); }
 
-    std::string read(size_t len) { 
+    std::string readAllBuf() { return buf_.readAll(); }
+
+    std::string read(ssize_t len) { 
         while(buf_.readableSize() < len){
-            readFd();
+            readFromSocket();
         }
         return buf_.read(len);
     }
@@ -29,7 +31,7 @@ public:
     std::string readLine(){
         std::string line = buf_.readLine();
         while(line.size() == 0){
-            if(readFd() == 0){
+            if(readFromSocket() == 0){
                 return {};
             } 
             line = buf_.readLine();
@@ -37,14 +39,25 @@ public:
         return line;
     }
 
+    std::string seek(ssize_t len) {
+        while(buf_.readableSize() < len){
+            readFromSocket();
+        }
+        return buf_.seek(len);
+    }
+
+    auto bufSize(){
+        return buf_.readableSize();
+    }
+
     Buffer& getBuffer() { return buf_;}
+
+    const SocketAddr& getAddr() const { return addr_; }
 
     void write(std::string_view str){
         ::write(fd_, str.data(), str.size());
     }
-    
 private:
-    ssize_t readFd() { return buf_.writeFromFd(fd_); }
 };
 
 } // namespace LGG

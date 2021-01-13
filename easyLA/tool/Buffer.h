@@ -17,6 +17,7 @@ public:
     Buffer() : buf_() {}
 
     std::string read(size_type len) {
+        assert(len <= readableSize());
         std::string res;
         res.reserve(len);
         std::move(buf_.begin(), buf_.begin() + len, std::back_insert_iterator(res));
@@ -44,6 +45,7 @@ public:
     }
 
     std::string seek(size_type len) const {
+        assert(len <= readableSize());
         std::string res;
         res.reserve(len);
         std::move(buf_.begin(), buf_.begin() + len, std::back_insert_iterator(res));
