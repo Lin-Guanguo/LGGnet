@@ -50,6 +50,7 @@ inline LogSetting::LogFunction LogSetting::G_LOG_FUNCTION = defaultLogFun ;
     #define LOG_WARN(...) LGG_LOG_DEFINE_TEMPLATE(WARN, "WARN ", __VA_ARGS__)
     #define LOG_ERROR(...) LGG_LOG_DEFINE_TEMPLATE(ERROR, "ERROR", __VA_ARGS__)
     #define LOG_FATAL(...) LGG_LOG_DEFINE_TEMPLATE(FATAL, "FATAL",  __VA_ARGS__)
+    #define LOG_FATAL_AND_DIE(...) { LGG_LOG_DEFINE_TEMPLATE(FATAL, "FATAL",  __VA_ARGS__); exit(-1); }
 #else
     #define LOG_TRACE(...) {}
     #define LOG_DEBUG(...) {}
