@@ -37,6 +37,7 @@ class SocketAddr {
             default:
                 LOG_WARN("unkonw domain used, can't init");
         }
+        LOG_TRACE("new Socket Addr, domain = ", family);
     }
 
     SocketAddr(const ::sockaddr_storage& addr){
@@ -54,26 +55,31 @@ class SocketAddr {
 
     socklen_t getLen() const { return sizeof(addr_); }
 
-    std::string tostring() const { 
+    std::string toStringAsIPV4() const {
         constexpr int bufsize = sizeof(sockaddr_storage);
         char buf[bufsize];
+        auto p = this->getPtrAsIPV4();
+        ::inet_ntop(AF_INET, (const void*)&p->sin_addr, buf, bufsize);
+        return Format::concatToString(buf, ":", p->sin_port);
+    }
+
+    std::string toStringAsIPV6() const {
+        constexpr int bufsize = sizeof(sockaddr_storage);
+        char buf[bufsize];
+        auto p = this->getPtrAsIPV6();
+        ::inet_ntop(AF_INET6, (const void*)&p->sin6_addr, buf, bufsize);
+        return Format::concatToString(buf, ":", p->sin6_port);
+    }
+
+    std::string toString() const { 
         switch(addr_.ss_family){
-            case AF_INET:{
-                auto p = this->getPtrAsIPV4();
-                ::inet_ntop(AF_INET, (const void*)&p->sin_addr, buf, bufsize);
-                return Format::concatToString(buf, ":", p->sin_port);
-            }
-                break;
-            case AF_INET6:{
-                auto p = this->getPtrAsIPV6();
-                ::inet_ntop(AF_INET6, (const void*)&p->sin6_addr, buf, bufsize);
-                return Format::concatToString(buf, ":", p->sin6_port);
-            }
-                break;
+            case AF_INET:
+                return toStringAsIPV4();
+            case AF_INET6:
+                return toStringAsIPV6();
             default:
-                LOG_WARN("unkonw domain used, can't tostring");
+                return "unkonwIPVersion";
         }
-        return {};
     }
 
 };
