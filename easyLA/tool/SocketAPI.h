@@ -84,7 +84,7 @@ class SocketAddr {
 
 };
     
-class SocketOps : StaticClass {
+class SocketAPI : StaticClass {
   public:
     static constexpr int DEFAULT_BACKLOG = 128;
 
