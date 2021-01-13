@@ -1,5 +1,4 @@
-#ifndef LGGNET_TOOL_FORMATIO
-#define LGGNET_TOOL_FORMATIO
+#pragma once
 
 #include "StaticClass.h"
 #include <string>
@@ -39,4 +38,3 @@ class Format : StaticClass{
 
 } // namespace LGG
 
-#endif

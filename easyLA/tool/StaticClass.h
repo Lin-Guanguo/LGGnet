@@ -1,5 +1,4 @@
-#ifndef LGGNET_TOOL_STATICCLASS
-#define LGGNET_TOOL_STATICCLASS
+#pragma once
 
 namespace LGG
 {
@@ -10,5 +9,3 @@ class StaticClass {
 };
 
 } // namespace LGG
-
-#endif

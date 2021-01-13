@@ -1,5 +1,4 @@
-#ifndef LGGNET_TOOL_BUFFER
-#define LGGNET_TOOL_BUFFER
+#pragma once
 
 #include <cassert>
 #include <deque>
@@ -52,5 +51,3 @@ class Buffer : Noncopyable {
 };
 
 } // namespace LGG
-
-#endif

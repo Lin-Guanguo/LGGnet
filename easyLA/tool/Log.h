@@ -1,5 +1,4 @@
-#ifndef LGGNET_TOOL_LOG
-#define LGGNET_TOOL_LOG
+#pragma once
 
 #include "StaticClass.h"
 #include "Format.h"
@@ -61,5 +60,3 @@ inline LogSetting::LogFunction LogSetting::G_LOG_FUNCTION = defaultLogFun ;
 #endif
 
 } // namespace LGG
-
-#endif

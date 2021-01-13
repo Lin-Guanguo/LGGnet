@@ -1,5 +1,4 @@
-#ifndef LGGNET_TOOL_NONCOPYABLE
-#define LGGNET_TOOL_NONCOPYABLE
+#pragma once
 
 namespace LGG
 {
@@ -13,4 +12,3 @@ class Noncopyable {
 
 }//end LGG
 
-#endif
