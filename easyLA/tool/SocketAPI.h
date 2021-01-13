@@ -45,12 +45,12 @@ class SocketAPI : StaticClass {
 
     static int listen(int fd);
 
-    struct acceptRes {
+    struct AcceptRes {
         int fd;
         SocketAddr addr;
     };
 
-    static acceptRes accept(int fd);
+    static AcceptRes accept(int fd);
 
     static int close(int fd);
 

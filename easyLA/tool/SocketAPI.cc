@@ -77,9 +77,9 @@ int SocketAPI::listen(int fd){
     return res;
 }
 
-SocketAPI::acceptRes SocketAPI::accept(int fd){
+SocketAPI::AcceptRes SocketAPI::accept(int fd){
     LOG_TRACE("accept")
-    acceptRes res;
+    AcceptRes res;
     socklen_t len;
     res.fd = ::accept(fd, res.addr.getPtr(), &len);
     return res;

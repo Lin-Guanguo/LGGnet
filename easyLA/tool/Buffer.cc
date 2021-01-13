@@ -4,7 +4,7 @@
 using namespace std;
 using namespace LGG;
 
-ssize_t Buffer::writefd(int fd) {
+ssize_t Buffer::writeFromFd(int fd) {
     char stackbuf[1<<16];
     auto readSize = ::read(fd, stackbuf, 1 << 16);
     LOG_TRACE("Buffer ", this, " read ", readSize, " from fd ", fd);

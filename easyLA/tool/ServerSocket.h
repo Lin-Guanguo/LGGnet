@@ -1,12 +1,14 @@
 #pragma once
 
 #include "SocketAPI.h"
+#include "ClientSocket.h"
 #include "Log.h"
+#include "ConnectionSocket.h"
 
 namespace LGG
 {
 
-class ServerSocket{
+class ServerSocket : Noncopyable {
     int fd_;
 public:
     ServerSocket(int port) {
@@ -19,7 +21,10 @@ public:
 
     ~ServerSocket() { SocketAPI::close(fd_); };
 
-    auto accept() { return SocketAPI::accept(fd_); }
+    ConnectionSocket accept() { 
+        auto acceptRes = SocketAPI::accept(fd_); 
+        return {acceptRes.fd, acceptRes.addr};
+    }
 
     int getFd() { return fd_; }
 };

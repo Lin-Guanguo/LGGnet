@@ -28,6 +28,21 @@ class Buffer : Noncopyable {
         return this->read(buf_.size());
     }
 
+    std::string readLine() {
+        auto lineEnd = std::find(buf_.begin(), buf_.end(), '\n');
+        if(lineEnd == buf_.end()){
+            LOG_TRACE("read line faied, {}");
+            return {};
+        }else{
+            std::string res;
+            res.reserve(lineEnd - buf_.begin());
+            std::move(buf_.begin(), lineEnd + 1, std::back_insert_iterator(res));
+            buf_.erase(buf_.begin(), lineEnd + 1);
+            LOG_TRACE("read line: ", res);
+            return res;
+        }
+    }
+
     std::string seek(size_type len) const {
         std::string res;
         res.reserve(len);
@@ -43,7 +58,7 @@ class Buffer : Noncopyable {
         std::copy(str.begin(), str.end(), std::back_insert_iterator(buf_));
     }
 
-    ssize_t writefd(int fd);
+    ssize_t writeFromFd(int fd);
 
     size_type readableSize() const { return buf_.size(); }
 
