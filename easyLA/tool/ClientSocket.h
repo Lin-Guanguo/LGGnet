@@ -1,7 +1,5 @@
 #pragma once
 
-#include "SocketAPI.h"
-#include "Log.h"
 #include "ConnectionSocket.h"
 
 namespace LGG

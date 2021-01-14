@@ -1,4 +1,6 @@
 #include "ClientSocket.h"
+#include "SocketAPI.h"
+#include "Log.h"
 
 using namespace LGG;
 
