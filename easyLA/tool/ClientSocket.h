@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConnectionSocket.h"
+#include "StaticClass.h"
 
 namespace LGG
 {
