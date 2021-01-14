@@ -1,5 +1,4 @@
-#ifndef LGGNET_TOOL_CHANNEL
-#define LGGNET_TOOL_CHANNEL
+#pragma once
 
 #include "../tool/Noncopyable.h"
 
@@ -27,5 +26,3 @@ class Channel : Noncopyable {
 };
 
 } // namespace LGG
-
-#endif

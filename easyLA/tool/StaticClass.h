@@ -1,14 +1,11 @@
-#ifndef LGGNET_TOOL_STATICCLASS
-#define LGGNET_TOOL_STATICCLASS
+#pragma once
 
 namespace LGG
 {
     
 class StaticClass {
-  public:
+public:
     StaticClass() = delete;
 };
 
 } // namespace LGG
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef LGGNET_NET_EVENTLOOP
-#define LGGNET_NET_EVENTLOOP
+#pragma once
 
 #include "../tool/Noncopyable.h"
 #include <cassert>
@@ -38,4 +37,3 @@ class EventLoop : Noncopyable {
 
 } // namespace LGG
 
-#endif

@@ -1,14 +1,14 @@
-#ifndef LGGNET_TOOL_FORMATIO
-#define LGGNET_TOOL_FORMATIO
+#pragma once
 
 #include "StaticClass.h"
 #include <string>
+#include <stdio.h>
 
 namespace LGG
 {
 
 class Format : StaticClass{
-  public:
+public:
     template<typename... T>
     static std::string concatToString(T... args){
         std::string s;
@@ -28,9 +28,12 @@ class Format : StaticClass{
     static void concat(const char* cstr, std::string& str) { str.append(cstr); }
     static void concat(std::string_view cstr, std::string& str) { str.append(cstr); }
     static void concat(void* ptr, std::string& str) { str.append(std::to_string((long)ptr)); }
-  private:
+
+    template<typename... T>
+    static void print(T... args){
+        ::printf("%s", concatToString(std::forward<T>(args)...).data());
+    }
 };
 
 } // namespace LGG
 
-#endif

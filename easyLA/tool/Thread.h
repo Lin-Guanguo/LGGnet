@@ -1,5 +1,4 @@
-#ifndef LGGNET_TOOL_THREAD
-#define LGGNET_TOOL_THREAD
+#pragma once
 
 #include "StaticClass.h"
 #include <pthread.h>
@@ -8,7 +7,7 @@ namespace LGG
 {
 
 class CurrentThread : StaticClass {
-  public:
+public:
     static pthread_t threadId() {
         return ::pthread_self();
     }
@@ -16,5 +15,3 @@ class CurrentThread : StaticClass {
 };
     
 } // namespace LGG
- 
-#endif

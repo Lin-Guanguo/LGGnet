@@ -1,11 +1,10 @@
-#ifndef LGGNET_TOOL_NONCOPYABLE
-#define LGGNET_TOOL_NONCOPYABLE
+#pragma once
 
 namespace LGG
 {
     
 class Noncopyable {
-  public:
+public:
     Noncopyable() = default;
     Noncopyable(const Noncopyable&) = delete;
     Noncopyable& operator= (const Noncopyable&) = delete;
@@ -13,4 +12,3 @@ class Noncopyable {
 
 }//end LGG
 
-#endif

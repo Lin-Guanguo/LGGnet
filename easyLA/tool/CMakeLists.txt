@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(lggnet_net)
+project(easyLA_tool)
 
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(${PROJECT_NAME} STATIC
-    Channel.cc
-    EventLoop.cc   
+    Buffer.cc
+    ClientSocket.cc
+    ConnectionSocket.cc
+    ServerSocket.cc
+    SocketAPI.cc
 )
 
 target_include_directories(${PROJECT_NAME}
