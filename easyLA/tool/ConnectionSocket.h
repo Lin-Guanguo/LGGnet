@@ -3,7 +3,6 @@
 #include "Noncopyable.h"
 #include "Buffer.h"
 #include "SocketAPI.h"
-#include <unistd.h>
 
 namespace LGG
 {
@@ -54,10 +53,7 @@ public:
 
     const SocketAddr& getAddr() const { return addr_; }
 
-    void write(std::string_view str){
-        ::write(fd_, str.data(), str.size());
-    }
-private:
+    void write(std::string_view str);
 };
 
 } // namespace LGG
