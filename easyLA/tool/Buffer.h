@@ -2,6 +2,7 @@
 
 #include <string_view>
 #include <cassert>
+#include <sys/types.h>
 #include "Noncopyable.h"
 
 namespace LGG

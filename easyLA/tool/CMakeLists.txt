@@ -8,8 +8,10 @@ add_library(${PROJECT_NAME} STATIC
     Buffer.cc
     ClientSocket.cc
     ConnectionSocket.cc
+    Process.cc
     ServerSocket.cc
     SocketAPI.cc
+    Thread.cc
 )
 
 target_include_directories(${PROJECT_NAME}
