@@ -102,7 +102,7 @@ public:
         put({s, len});
     }
 
-    size_t putFromFd(int fd);
+    ssize_t putFromFd(int fd);
 
     std::string_view get(size_t size) {
         assert(mode_ == READ);

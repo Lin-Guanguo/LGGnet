@@ -19,7 +19,7 @@ public:
 
     ~ConnectionSocket();
 
-    size_t readFd();
+    ssize_t readFd();
 
     std::string_view readLine();
 

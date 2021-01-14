@@ -18,7 +18,7 @@ ConnectionSocket::ConnectionSocket(int fd, SocketAddr addr)
 
 ConnectionSocket::~ConnectionSocket() { SocketAPI::close(fd_); };
 
-size_t ConnectionSocket::readFd() {
+ssize_t ConnectionSocket::readFd() {
     readBuf_->writeMode();
     auto res = readBuf_->putFromFd(fd_);
     readBuf_->readMode();

@@ -32,7 +32,7 @@ void Buffer::resize(size_t size) {
     position_ = byteArray_;
 }
 
-size_t Buffer::putFromFd(int fd) {
+ssize_t Buffer::putFromFd(int fd) {
     auto remain = remainingSize();
     if(remain > 0){
         auto readCount = ::read(fd, position_, remain);
