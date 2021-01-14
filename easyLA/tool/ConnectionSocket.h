@@ -9,28 +9,28 @@ namespace LGG
 
 class ConnectionSocket : Noncopyable {
     //一直处于读模式
-    Buffer buf_;
+    Buffer readBuf_;
     int fd_;
     SocketAddr addr_;
     static size_t DEFAULT_BUFSIZE;
 public:
 
-    ConnectionSocket(int fd, SocketAddr addr) : fd_(fd), addr_(addr), buf_(DEFAULT_BUFSIZE) {
-        buf_.readMode();
+    ConnectionSocket(int fd, SocketAddr addr) : fd_(fd), addr_(addr), readBuf_(DEFAULT_BUFSIZE) {
+        readBuf_.readMode();
     };
 
     ~ConnectionSocket() { SocketAPI::close(fd_); };
 
     size_t readFd() {
-        buf_.writeMode();
-        auto res = buf_.putFromFd(fd_);
-        buf_.readMode();
+        readBuf_.writeMode();
+        auto res = readBuf_.putFromFd(fd_);
+        readBuf_.readMode();
         return res;
     }
 
     std::string_view readLine() {
         std::string_view line;
-        while((line = buf_.getLine()).size() == 0){
+        while((line = readBuf_.getLine()).size() == 0){
             readFd();
         }
         return line;
@@ -40,7 +40,7 @@ public:
 
     void write(std::string_view str);
 
-    void resizeBuf(size_t newSize) { buf_.resize(newSize); }
+    void resizeBuf(size_t newSize) { readBuf_.resize(newSize); }
 
     static void setDEFAULT_BUFSIZE(size_t size) {
         DEFAULT_BUFSIZE = size;
