@@ -1,8 +1,6 @@
 #include "../../easyLA/tool/ServerSocket.h"
 #include "../../easyLA/tool/Log.h"
-#include "../../easyLA/tool/SocketAPI.h"
 #include <unistd.h>
-#include <string>
 
 using namespace std;
 using namespace LGG;
