@@ -9,7 +9,9 @@ using namespace std;
 size_t ConnectionSocket::DEFAULT_BUFSIZE = 1<<12;
 
 ConnectionSocket::ConnectionSocket(int fd, SocketAddr addr) 
-    : fd_(fd), addr_(make_unique<SocketAddr>(addr)), readBuf_(make_unique<Buffer>(DEFAULT_BUFSIZE)) 
+    : fd_(fd), 
+    addr_(make_unique<SocketAddr>(addr)), 
+    readBuf_(make_unique<Buffer>(DEFAULT_BUFSIZE)) 
 {
     readBuf_->readMode();
 };
