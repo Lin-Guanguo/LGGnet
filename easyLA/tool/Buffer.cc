@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <algorithm>
 #include "Log.h"
 
 using namespace std;
@@ -43,12 +44,24 @@ size_t Buffer::putFromFd(int fd) {
 }
 
 void Buffer::compact() {
+    mode_ = WRITE;
     ::memmove(byteArray_, position_, limit_ - position_);
     position_ = byteArray_ + (limit_ - position_);
     limit_ = capital_;
 }
 
 void Buffer::put(std::string_view src) {
+    assert(mode_ == WRITE);
     ::mempcpy(position_, src.data(), src.size());
     position_ += src.size();
+}
+
+std::string_view Buffer::getLine() {
+    assert(mode_ == READ);
+    auto nl = std::find(position_, limit_, '\n');
+    if(nl == limit_){
+        return {};
+    }else{
+        return get(static_cast<size_t>(nl - position_ + 1));
+    }
 }
