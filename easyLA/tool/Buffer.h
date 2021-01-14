@@ -1,69 +1,110 @@
 #pragma once
-
-#include <cassert>
-#include <deque>
-#include "Log.h"
+#include <sys/types.h>
+#include <string_view>
 #include "Noncopyable.h"
 
 namespace LGG
 {
-
+    
 class Buffer : Noncopyable {
-    static constexpr size_t INI_SIZE = 1024;
-    using size_type = std::deque<char>::size_type;
+protected:
+    char* byteArray_;
+    char* position_;
+    char* limit_;
+    char* capital_;
 
-    std::deque<char> buf_;
+    char* mark_;
 public:
-    Buffer() : buf_() {}
-
-    std::string read(size_type len) {
-        assert(len <= readableSize());
-        std::string res;
-        res.reserve(len);
-        std::move(buf_.begin(), buf_.begin() + len, std::back_insert_iterator(res));
-        buf_.erase(buf_.begin(), buf_.begin() + len);
-        return res;
+    static Buffer allocate(size_t size){
+        return {size};
     }
 
-    std::string readAll() {
-        return this->read(buf_.size());
+    Buffer(size_t size);
+
+    ~Buffer();
+
+    void resize(size_t size);
+
+    /**
+     * position置为0
+     * 读模式下用于重读
+     */
+    void rewind() {
+        position_ = byteArray_;
     }
 
-    std::string readLine() {
-        auto lineEnd = std::find(buf_.begin(), buf_.end(), '\n');
-        if(lineEnd == buf_.end()){
-            LOG_TRACE("read line faied, {}");
-            return {};
-        }else{
-            std::string res;
-            res.reserve(lineEnd - buf_.begin());
-            std::move(buf_.begin(), lineEnd + 1, std::back_insert_iterator(res));
-            buf_.erase(buf_.begin(), lineEnd + 1);
-            LOG_TRACE("read line: ", res);
-            return res;
-        }
+    /**
+     * position置为0，limit置为capital
+     * 重置为初始状态，等待写
+     */
+    void clear() {
+        position_ = byteArray_;
+        limit_ = capital_;
     }
 
-    std::string seek(size_type len) const {
-        assert(len <= readableSize());
-        std::string res;
-        res.reserve(len);
-        std::move(buf_.begin(), buf_.begin() + len, std::back_insert_iterator(res));
-        return res;
+    /**
+     * 将未读数据置放到开头
+     * 保留未读数据，进入写模式
+     */
+    void compact();
+
+    /**
+     * 标记position
+     */
+    void mark() {
+        mark_ = position_;
     }
 
-    void writePre(std::string_view str) {
-        std::copy(str.rbegin(), str.rend(), std::front_insert_iterator(buf_));
+    /**
+     * position回到上一次标记位置
+     * 未标记回到随机位置(warn)
+     */
+    void reset() {
+        position_ = mark_;
     }
 
-    void write(std::string_view str) {
-        std::copy(str.begin(), str.end(), std::back_insert_iterator(buf_));
+    /**
+     * limit置为position，position置为0
+     * 写模式转化为读模式
+     */
+    void flip() {
+        limit_ = position_;
+        position_ = byteArray_;
     }
 
-    ssize_t writeFromFd(int fd);
+    size_t remainingSize() {
+        return limit_ - position_;
+    }
 
-    size_type readableSize() const { return buf_.size(); }
+    void put(std::string_view src);
 
+    void put(const char* s, size_t len) {
+        put({s, len});
+    }
+
+    size_t putFromFd(int fd);
+
+    std::string_view get(size_t size) {
+        auto p = position_;
+        position_ += size;
+        return {p, size};
+    }
+
+    std::string_view getAll() {
+        auto p = position_;
+        position_ = limit_;
+        return {p, limit_ - p};
+    }
+
+    std::string_view seek(size_t size) {
+        return {position_, size};
+    }
+
+    std::string_view seekAll() {
+        return {position_, (limit_ - position_)};
+    }
+
+private:
     
 };
 

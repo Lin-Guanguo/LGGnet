@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(${PROJECT_NAME} STATIC
     Buffer.cc
+    ClientSocket.cc
+    ConnectionSocket.cc
+    ServerSocket.cc
     SocketAPI.cc
 )
 

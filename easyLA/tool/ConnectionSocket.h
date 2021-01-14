@@ -11,49 +11,30 @@ class ConnectionSocket : Noncopyable {
     Buffer buf_;
     int fd_;
     SocketAddr addr_;
+    static size_t DEFAULT_BUFSIZE;
 public:
-    ConnectionSocket(int fd, SocketAddr addr) : fd_(fd), addr_(addr) {};
+
+    ConnectionSocket(int fd, SocketAddr addr) : fd_(fd), addr_(addr), buf_(DEFAULT_BUFSIZE) {};
 
     ~ConnectionSocket() { SocketAPI::close(fd_); };
 
-    ssize_t readFromSocket() { return buf_.writeFromFd(fd_); }
+    Buffer& getBuffer() { return buf_; }
 
-    std::string readAllBuf() { return buf_.readAll(); }
-
-    std::string read(ssize_t len) { 
-        while(buf_.readableSize() < len){
-            readFromSocket();
-        }
-        return buf_.read(len);
-    }
-
-    std::string readLine(){
-        std::string line = buf_.readLine();
-        while(line.size() == 0){
-            if(readFromSocket() == 0){
-                return {};
-            } 
-            line = buf_.readLine();
-        }
-        return line;
-    }
-
-    std::string seek(ssize_t len) {
-        while(buf_.readableSize() < len){
-            readFromSocket();
-        }
-        return buf_.seek(len);
-    }
-
-    auto bufSize(){
-        return buf_.readableSize();
-    }
-
-    Buffer& getBuffer() { return buf_;}
+    void resizeBuf(size_t newSize) { buf_.resize(newSize); }
 
     const SocketAddr& getAddr() const { return addr_; }
 
+    
+
     void write(std::string_view str);
+
+    static void setDEFAULT_BUFSIZE(size_t size) {
+        DEFAULT_BUFSIZE = size;
+    }
+
+    static size_t getDEFAULT_BUFSIZE() {
+        return DEFAULT_BUFSIZE;
+    }
 };
 
 } // namespace LGG
