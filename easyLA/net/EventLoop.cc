@@ -10,7 +10,7 @@ using namespace std;
 __thread EventLoop* loopInThisThread_t = nullptr;
 
 EventLoop::EventLoop() 
-  : threadId_(ThreadAPI::currentThreadId())
+  : threadId_(Thread::currentThreadId())
 {
     LOG_TRACE("EventLoop creart ", this, " in thread ", threadId_)
 	if(loopInThisThread_t == nullptr){
@@ -34,13 +34,13 @@ void EventLoop::loop() {
 
 void EventLoop::assertInLoopThread() {
 	if(!isInLoopThread()){
-		LOG_FATAL("assertInLoopThread == false thread ", threadId_, "!=" , ThreadAPI::currentThreadId());
+		LOG_FATAL("assertInLoopThread == false thread ", threadId_, "!=" , Thread::currentThreadId());
 		assert(isInLoopThread());
 	}
 }
 
 bool EventLoop::isInLoopThread() const { 
-    return threadId_ == ThreadAPI::currentThreadId(); 
+    return threadId_ == Thread::currentThreadId(); 
 } 
 
 void EventLoop::addChannel(ChannelPtr channelptr) { 

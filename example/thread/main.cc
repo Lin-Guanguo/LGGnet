@@ -20,9 +20,11 @@ public:
 };
 
 int main(int argc, char** argv){
-    auto t = ThreadAPI::Create([](){
+    auto t = Thread::Create([](){
         LOG_INFO("Hello");
+        return true;
     });
     t->start();
+    LOG_INFO("join return ", t->join());
     ::sleep(4);
 }

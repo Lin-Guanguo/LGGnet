@@ -2,7 +2,9 @@
 
 #include "StaticClass.h"
 #include "Noncopyable.h"
+#include "RunInEndOfBlock.h"
 #include "Log.h"
+#include <type_traits>
 #include <pthread.h>
 #include <memory>
 #include <cassert>
@@ -10,22 +12,27 @@
 namespace LGG
 {
 
-class ThreadAPI : StaticClass {
+class Thread : StaticClass {
 private:
     template<typename Runable>
-    class Thread : Noncopyable, public std::enable_shared_from_this<Thread<Runable>> {  
-        //document: (ie. public inheritance is mandatory) (since C++17)
+    class ThreadHandle : Noncopyable, public std::enable_shared_from_this<ThreadHandle<Runable>> {  
     private:
         pthread_t id_;
         Runable task_;
         volatile bool detach_ = false;
         volatile bool started_ = false;
     public:
-        Thread(const Runable& task) : task_(task) {
-            LOG_TRACE("A Thread obj Constructor ", this);
+        using TaskReturnType = decltype(task_());
+
+        //task's return value's type could only be basetype or pointer
+        ThreadHandle(const Runable& task) : task_(task) {
+            LOG_TRACE("A Thread obj Constructor ", this, " returnType is ", typeid(TaskReturnType).name());
+            assert(std::is_pointer<TaskReturnType>::value || 
+                    std::is_integral<TaskReturnType>::value || 
+                    std::is_floating_point<TaskReturnType>::value);
         }
 
-        ~Thread() {
+        ~ThreadHandle() {
             LOG_TRACE("A Thread obj Destructor ", this);
         }
 
@@ -38,7 +45,7 @@ private:
             LOG_TRACE("thread start");
             assert(!started_);
             auto p = this->shared_from_this();
-            auto pp = new std::shared_ptr<Thread>(p) ;
+            auto pp = new std::shared_ptr<ThreadHandle>(p) ;
             ::pthread_create(
                 &id_, 
                 NULL, 
@@ -47,30 +54,31 @@ private:
             started_ = true;
         }
 
-        void join() {
+        TaskReturnType join() {
+            LOG_TRACE("join id = ", ::pthread_self());
             assert(started_);
-            ::pthread_join(id_, NULL);
+            void* res;
+            ::pthread_join(id_, &res);
+            return *reinterpret_cast<TaskReturnType*>(&res);
         }
 
     private:
         static void* pthreadRunner(void* p) {
             LOG_TRACE("subthread run id = ", ::pthread_self());
-            auto threadPP = (std::shared_ptr<Thread<Runable>>*)p;
+            auto threadPP = (std::shared_ptr<ThreadHandle<Runable>>*)p;
             auto& thread = **threadPP;
-
             if(thread.detach_){
                 ::pthread_detach(thread.id_);
             }
-            thread.task_();
-
+            TaskReturnType res = thread.task_();
             delete threadPP;
-            return NULL;
+            return *reinterpret_cast<void**>(&res);
         }
     };
 public:
     template<typename Runable>
-    static std::shared_ptr<Thread<Runable>> Create(const Runable& task) {
-        return std::make_shared<Thread<Runable>>(task);
+    static std::shared_ptr<ThreadHandle<Runable>> Create(const Runable& task) {
+        return std::make_shared<ThreadHandle<Runable>>(task);
     }
 
     static pthread_t currentThreadId() { return ::pthread_self(); }

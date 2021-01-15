@@ -2,7 +2,6 @@
 
 #include "StaticClass.h"
 #include "Format.h"
-#include <functional>
 #include <string_view>
 
 namespace LGG
@@ -19,7 +18,7 @@ public:
         FATAL,
         NUM_LOG_LEVELS,
     };
-    using LogFunction = std::function<void(std::string_view)>;
+    using LogFunction = void(*)(std::string_view);
 
     static void setG_LOG_LEVEL(LogLevel newLevel) { G_LOG_LEVEL = newLevel; }
     static LogLevel getG_LOG_LEVEL() { return G_LOG_LEVEL; }
