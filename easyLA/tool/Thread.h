@@ -2,7 +2,6 @@
 
 #include "StaticClass.h"
 #include "Noncopyable.h"
-#include "RunInEndOfBlock.h"
 #include "Log.h"
 #include <type_traits>
 #include <pthread.h>
