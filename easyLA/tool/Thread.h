@@ -10,58 +10,72 @@
 namespace LGG
 {
 
-class CurrentThread : StaticClass {
+class ThreadAPI : StaticClass {
+private:
+    template<typename Runable>
+    class Thread : Noncopyable, public std::enable_shared_from_this<Thread<Runable>> {  
+        //document: (ie. public inheritance is mandatory) (since C++17)
+    private:
+        pthread_t id_;
+        Runable task_;
+        volatile bool detach_ = false;
+        volatile bool started_ = false;
+    public:
+        Thread(const Runable& task) : task_(task) {
+            LOG_TRACE("A Thread obj Constructor ", this);
+        }
+
+        ~Thread() {
+            LOG_TRACE("A Thread obj Destructor ", this);
+        }
+
+        void detach() { 
+            assert(!started_);
+            detach_ = true; 
+        }
+
+        void start() {
+            LOG_TRACE("thread start");
+            assert(!started_);
+            auto p = this->shared_from_this();
+            auto pp = new std::shared_ptr<Thread>(p) ;
+            ::pthread_create(
+                &id_, 
+                NULL, 
+                pthreadRunner, 
+                (void*)pp);
+            started_ = true;
+        }
+
+        void join() {
+            assert(started_);
+            ::pthread_join(id_, NULL);
+        }
+
+    private:
+        static void* pthreadRunner(void* p) {
+            LOG_TRACE("subthread run id = ", ::pthread_self());
+            auto threadPP = (std::shared_ptr<Thread<Runable>>*)p;
+            auto& thread = **threadPP;
+
+            if(thread.detach_){
+                ::pthread_detach(thread.id_);
+            }
+            thread.task_();
+
+            delete threadPP;
+            return NULL;
+        }
+    };
 public:
-    static pthread_t threadId() { return ::pthread_self(); }
+    template<typename Runable>
+    static std::shared_ptr<Thread<Runable>> Create(const Runable& task) {
+        return std::make_shared<Thread<Runable>>(task);
+    }
+
+    static pthread_t currentThreadId() { return ::pthread_self(); }
 };
 
-// template<typename Runable>
-// class Thread : Noncopyable {
-// private:
-//     pthread_t id_;
-//     Runable* task_;
-//     bool detach_ = false;
-//     volatile bool started_ = false;
-// public:
-//     Thread(const Runable& runable) {
-//         auto task_ = (void*)new Runable(runable);
-//     }
 
-//     ~Thread() {
-//         if( !started_ ) delete task_;
-//     }
-
-//     void detach() { 
-//         assert(!started_);
-//         detach_ = true; 
-//     }
-
-//     void start() {
-//         assert(!started_);
-//         ::pthread_create(&id_, NULL, 
-//             pthreadRunner, 
-//             (void*)task_);
-//         started_ = true;
-//     }
-
-//     void join() {
-//         assert(started_);
-//         ::pthread_join(id_, NULL);
-//     }
-
-// private:
-
-
-//     void* pthreadRunner(void* p) {
-//         LOG_TRACE("sub thread run id = ", ::pthread_self());
-//         if(detach_){
-//             ::pthread_detach(id_);
-//         }
-//         auto prunable = (Runable*)p;
-//         (*prunable)();
-//         delete prunable;
-//         return NULL;
-//     }
-// };
     
 } // namespace LGG

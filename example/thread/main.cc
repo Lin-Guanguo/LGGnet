@@ -20,5 +20,9 @@ public:
 };
 
 int main(int argc, char** argv){
-
+    auto t = ThreadAPI::Create([](){
+        LOG_INFO("Hello");
+    });
+    t->start();
+    ::sleep(4);
 }
