@@ -1,19 +1,13 @@
 #include "Log.h"
-#include "ServerSocket.h"
-#include "SocketAPI.h"
+#include "Error.h"
+#include "IOAPI.h"
 
 using namespace LGG;
 
-int main() {
-    ServerSocket server(8011);
-    int fd = server.getFd();
-
-    char hello[] = "hello";
-    int len = sizeof(hello);
-    for (;;) {
-        auto connection = server.accept();
-        LOG_INFO(connection.getAddr().toStringAsIPV4());
-        auto line = connection.readLine();
-        connection.write(line);
-    }
+int main(int argc, char** argv) {
+	auto p = IOAPI::read;
+	LOG_INFO("hello");
+	errno = -1;
+	LOG_INFO(ErrorAPI::errnoMessage(errno));
+	::perror("hello");
 }

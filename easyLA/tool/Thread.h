@@ -26,7 +26,7 @@ private:
         //task's return value's type could only be basetype or pointer
         ThreadHandle(const Runable& task) : task_(task) {
             LOG_TRACE("A Thread obj Constructor ", this, " returnType is ", typeid(TaskReturnType).name());
-            assert(std::is_pointer<TaskReturnType>::value || 
+            static_assert(std::is_pointer<TaskReturnType>::value || 
                     std::is_integral<TaskReturnType>::value || 
                     std::is_floating_point<TaskReturnType>::value);
         }

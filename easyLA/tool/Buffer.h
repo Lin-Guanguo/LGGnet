@@ -105,6 +105,8 @@ public:
 
     ssize_t putFromFd(int fd);
 
+    ssize_t getToFd(int fd, size_t maxBytes);
+
     std::string_view get(size_t size) {
         assert(mode_ == READ);
         auto p = position_;

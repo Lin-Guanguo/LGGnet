@@ -7,7 +7,11 @@
 
 using namespace LGG;
 
-SocketAddr::SocketAddr(int family, std::string_view addr, unsigned short port) {
+SocketAddr::SocketAddr() {
+    memset(&addr_, 0, sizeof(addr_));
+}
+
+SocketAddr::SocketAddr(int family, std::string_view addr, unsigned short port) : SocketAddr() {
         this->getPtr()->sa_family = family;
         switch(family){
             case AF_INET:{

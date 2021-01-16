@@ -11,9 +11,11 @@ size_t ConnectionSocket::DEFAULT_BUFSIZE = 1<<12;
 ConnectionSocket::ConnectionSocket(int fd, SocketAddr addr) 
     : fd_(fd), 
     addr_(make_unique<SocketAddr>(addr)), 
-    readBuf_(make_unique<Buffer>(DEFAULT_BUFSIZE)) 
+    readBuf_(make_unique<Buffer>(DEFAULT_BUFSIZE)),
+    writeBuf_(make_unique<Buffer>(DEFAULT_BUFSIZE))
 {
     readBuf_->readMode();
+    writeBuf_->writeMode();
 };
 
 ConnectionSocket::~ConnectionSocket() { SocketAPI::close(fd_); };
@@ -36,5 +38,17 @@ std::string_view ConnectionSocket::readLine() {
 void ConnectionSocket::resizeBuf(size_t newSize) { readBuf_->resize(newSize); }
 
 void ConnectionSocket::write(std::string_view str){
-    ::write(fd_, str.data(), str.size());
+    if (writeBuf_->remainingSize() <= str.size()) {
+        writeBuf_->put(str);
+    }
+    else {
+        flush(str);
+    }
+}
+
+void ConnectionSocket::flush(std::string_view str) {
+
+}
+
+void ConnectionSocket::flush() {
 }

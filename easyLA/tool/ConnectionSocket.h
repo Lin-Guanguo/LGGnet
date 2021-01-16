@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Noncopyable.h"
-#include <bits/unique_ptr.h>
+#include <memory>
 
 
 namespace LGG
@@ -11,6 +11,7 @@ class SocketAddr;
 
 class ConnectionSocket : Noncopyable {
     std::unique_ptr<Buffer> readBuf_;
+    std::unique_ptr<Buffer> writeBuf_;
     std::unique_ptr<SocketAddr> addr_;
     int fd_;
     static size_t DEFAULT_BUFSIZE;
@@ -26,6 +27,10 @@ public:
     const SocketAddr& getAddr() const { return *addr_; }
 
     void write(std::string_view str);
+
+    void flush(std::string_view str);
+
+    void flush();
 
     void resizeBuf(size_t newSize);
 
