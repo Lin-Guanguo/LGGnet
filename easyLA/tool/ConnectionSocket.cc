@@ -1,6 +1,8 @@
 #include "ConnectionSocket.h"
 #include "Buffer.h"
 #include "SocketAPI.h"
+#include "Log.h"
+#include "IOAPI.h"
 #include <unistd.h>
 
 using namespace LGG;
@@ -37,18 +39,38 @@ std::string_view ConnectionSocket::readLine() {
 
 void ConnectionSocket::resizeBuf(size_t newSize) { readBuf_->resize(newSize); }
 
-void ConnectionSocket::write(std::string_view str){
-    if (writeBuf_->remainingSize() <= str.size()) {
-        writeBuf_->put(str);
+ssize_t ConnectionSocket::write(std::string_view str){
+    if (writeBuf_->remainingSize() >= str.size()) {
+        LOG_TRACE("connection ", this, " write buf put ", str);
+        return writeBuf_->put(str);
     }
     else {
-        flush(str);
+        LOG_TRACE("connection ", this, " writeBuf full, flush")
+        return flush(str);
     }
 }
 
-void ConnectionSocket::flush(std::string_view str) {
-
+ssize_t ConnectionSocket::flush() {
+    writeBuf_->readMode();
+    auto res = writeBuf_->getToFd(fd_);
+    writeBuf_->writeMode();
+    return res;
 }
 
-void ConnectionSocket::flush() {
+ssize_t ConnectionSocket::flush(size_t maxSize) {
+    writeBuf_->readMode();
+    auto res = readBuf_->getToFd(fd_, maxSize);
+    writeBuf_->writeMode();
+    return res;
 }
+
+ssize_t ConnectionSocket::flush(std::string_view str) {
+    writeBuf_->readMode();
+    
+    auto buf = writeBuf_->getAll();
+    auto res = IOAPI::writev(fd_, buf, str);
+    
+    writeBuf_->writeMode();
+    return res;
+}
+

@@ -33,6 +33,7 @@ void Buffer::resize(size_t size) {
 }
 
 ssize_t Buffer::putFromFd(int fd) {
+    assert(mode_ == Mode::WRITE);
     auto remain = remainingSize();
     if(remain > 0){
         auto readCount = IOAPI::read(fd, position_, remain);
@@ -43,8 +44,22 @@ ssize_t Buffer::putFromFd(int fd) {
     }
 }
 
-ssize_t Buffer::getToFd(int fd, size_t maxBytes) {
-
+size_t Buffer::getToFd(int fd, size_t maxBytes) {
+    LOG_TRACE("get to fd ", fd);
+    assert(mode_ == Mode::READ);
+    auto n = remainingSize();
+    if (maxBytes >= remainingSize()) {
+        LOG_TRACE("write fd ", n, "bytes");
+        IOAPI::write(fd, position_, n);
+        position_ += n;
+        return n;
+    }
+    else {
+        LOG_TRACE("write fd ", maxBytes, "bytes");
+        IOAPI::write(fd, position_, maxBytes);
+        position_ += maxBytes;
+        return maxBytes;
+    }
 }
 
 void Buffer::compact() {
@@ -54,10 +69,20 @@ void Buffer::compact() {
     limit_ = capital_;
 }
 
-void Buffer::put(std::string_view src) {
+ssize_t Buffer::put(std::string_view src) {
     assert(mode_ == WRITE);
-    ::mempcpy(position_, src.data(), src.size());
-    position_ += src.size();
+    int remain = remainingSize();
+    int srcsize = src.size();
+    if (remain >= src.size()) {
+        ::mempcpy(position_, src.data(), srcsize);
+        position_ += srcsize;
+        return srcsize;
+    }
+    else {
+        ::mempcpy(position_, src.data(), remain);
+        position_ += remain;
+        return remain;
+    }
 }
 
 std::string_view Buffer::getLine() {

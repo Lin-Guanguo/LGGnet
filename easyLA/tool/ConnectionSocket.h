@@ -10,7 +10,9 @@ class Buffer;
 class SocketAddr;
 
 class ConnectionSocket : Noncopyable {
+    //usually in readMode
     std::unique_ptr<Buffer> readBuf_;
+    //usually in writeMode
     std::unique_ptr<Buffer> writeBuf_;
     std::unique_ptr<SocketAddr> addr_;
     int fd_;
@@ -26,11 +28,12 @@ public:
 
     const SocketAddr& getAddr() const { return *addr_; }
 
-    void write(std::string_view str);
+    ssize_t write(std::string_view str);
 
-    void flush(std::string_view str);
+    ssize_t flush();
+    ssize_t flush(size_t maxSize);
 
-    void flush();
+    ssize_t flush(std::string_view str);
 
     void resizeBuf(size_t newSize);
 

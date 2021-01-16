@@ -1,13 +1,24 @@
+#include "ServerSocket.h"
 #include "Log.h"
-#include "Error.h"
+#include "SocketAPI.h"
 #include "IOAPI.h"
+#include <unistd.h>
+#include <string>
 
+using namespace std;
 using namespace LGG;
 
 int main(int argc, char** argv) {
-	auto p = IOAPI::read;
-	LOG_INFO("hello");
-	errno = -1;
-	LOG_INFO(ErrorAPI::errnoMessage(errno));
-	::perror("hello");
+    ServerSocket server(8011);
+    int fd = server.getFd();
+
+    ConnectionSocket::setDEFAULT_BUFSIZE(10);
+
+    char hello[] = "hello";
+    int len = sizeof(hello);
+    for (;;) {
+        auto connection = server.accept();
+        LOG_INFO(connection.getAddr().toStringAsIPV4());
+        auto line = connection.readLine();
+    }
 }

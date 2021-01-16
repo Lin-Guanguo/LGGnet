@@ -1,7 +1,9 @@
 #pragma once
 
 #include "StaticClass.h"
+#include <string_view>
 #include <unistd.h>
+#include <sys/uio.h>
 
 namespace LGG
 {
@@ -12,10 +14,32 @@ public:
 		return ::read(fd, buf, nbytes);
 	}
 
-	static auto write(int fd, char* buf, size_t nbytes) {
+	static auto write(int fd, const char* buf, size_t nbytes) {
 		return ::write(fd, buf, nbytes);
 	}
+	
+	static auto write(int fd, const std::string_view& str) {
+		return IOAPI::write(fd, str.data(), str.size());
+	}
+	
+	template<typename... Strs>
+	static auto writev(int fd, const Strs&... strs) {
+		int iovcnt = sizeof...(strs);
+		auto iov = new iovec[iovcnt]();
+		int n = 0;
+		(writevHelper(strs, iov, n), ...);
+		auto res = ::writev(fd, iov, iovcnt);
+		delete[] iov;
+		return res;
+	}
 
+private:
+	static void writevHelper(const std::string_view& str, iovec* iov, int& n) {
+		iov[n].iov_base = const_cast<char*>(str.data());
+		iov[n].iov_len = str.size();
+		n++;
+	}
+	
 };
 
 } // namespcae LGG

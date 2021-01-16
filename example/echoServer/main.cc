@@ -1,6 +1,6 @@
-#include "../../easyLA/tool/ServerSocket.h"
-#include "../../easyLA/tool/Log.h"
-#include "../../easyLA/tool/SocketAPI.h"
+#include "ServerSocket.h"
+#include "Log.h"
+#include "SocketAPI.h"
 #include <unistd.h>
 #include <string>
 

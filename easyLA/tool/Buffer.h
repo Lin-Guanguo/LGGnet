@@ -97,15 +97,20 @@ public:
         return static_cast<size_t>(limit_ - position_);
     }
 
-    void put(std::string_view src);
+    //返回实际put字节数，缓冲空间不足return < src.size()
+    ssize_t put(std::string_view src);
 
-    void put(const char* s, size_t len) {
-        put({s, len});
+    ssize_t put(const char* s, size_t len) {
+        return put({s, len});
     }
 
     ssize_t putFromFd(int fd);
 
-    ssize_t getToFd(int fd, size_t maxBytes);
+    size_t getToFd(int fd) {
+        return getToFd(fd, remainingSize());
+    }
+
+    size_t getToFd(int fd, size_t maxBytes);
 
     std::string_view get(size_t size) {
         assert(mode_ == READ);
