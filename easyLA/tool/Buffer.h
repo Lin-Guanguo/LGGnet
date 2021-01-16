@@ -106,11 +106,11 @@ public:
 
     ssize_t putFromFd(int fd);
 
-    size_t getToFd(int fd) {
+    ssize_t getToFd(int fd) {
         return getToFd(fd, remainingSize());
     }
 
-    size_t getToFd(int fd, size_t maxBytes);
+    ssize_t getToFd(int fd, size_t maxBytes);
 
     std::string_view get(size_t size) {
         assert(mode_ == READ);

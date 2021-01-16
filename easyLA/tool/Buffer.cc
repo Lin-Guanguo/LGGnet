@@ -44,21 +44,21 @@ ssize_t Buffer::putFromFd(int fd) {
     }
 }
 
-size_t Buffer::getToFd(int fd, size_t maxBytes) {
+ssize_t Buffer::getToFd(int fd, size_t maxBytes) {
     LOG_TRACE("get to fd ", fd);
     assert(mode_ == Mode::READ);
     auto n = remainingSize();
     if (maxBytes >= remainingSize()) {
         LOG_TRACE("write fd ", n, "bytes");
-        IOAPI::write(fd, position_, n);
-        position_ += n;
-        return n;
+        auto writeCount = IOAPI::write(fd, position_, n);
+        position_ += writeCount;
+        return writeCount;
     }
     else {
         LOG_TRACE("write fd ", maxBytes, "bytes");
-        IOAPI::write(fd, position_, maxBytes);
-        position_ += maxBytes;
-        return maxBytes;
+        auto writeCount = IOAPI::write(fd, position_, maxBytes);
+        position_ += writeCount;
+        return writeCount;
     }
 }
 

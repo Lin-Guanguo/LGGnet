@@ -12,7 +12,6 @@ int main(int argc, char** argv) {
     ServerSocket server(8011);
     int fd = server.getFd();
 
-    ConnectionSocket::setDEFAULT_BUFSIZE(10);
 
     char hello[] = "hello";
     int len = sizeof(hello);
@@ -20,5 +19,8 @@ int main(int argc, char** argv) {
         auto connection = server.accept();
         LOG_INFO(connection.getAddr().toStringAsIPV4());
         auto line = connection.readLine();
+        connection.write("hello\necho = ");
+        connection.write(line);
+        connection.flush();
     }
 }
