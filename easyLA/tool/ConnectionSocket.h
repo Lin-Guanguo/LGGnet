@@ -16,7 +16,8 @@ class ConnectionSocket : Noncopyable {
     std::unique_ptr<Buffer> writeBuf_;
     std::unique_ptr<SocketAddr> addr_;
     int fd_;
-    static size_t DEFAULT_BUFSIZE;
+    static size_t DEFAULT_READ_BUFSIZE;
+    static size_t DEFAULT_WRITE_BUFSIZE;
 public:
     ConnectionSocket(int fd, SocketAddr addr);
 
@@ -35,14 +36,24 @@ public:
 
     ssize_t flush(std::string_view str);
 
-    void resizeBuf(size_t newSize);
+    void resizeReadBuf(size_t newSize);
 
-    static void setDEFAULT_BUFSIZE(size_t size) {
-        DEFAULT_BUFSIZE = size;
+    void resizeWriteBuf(size_t newSize);
+
+    static void setDEFAULT_READ_BUFSIZE(size_t size) {
+        DEFAULT_READ_BUFSIZE = size;
     }
 
-    static size_t getDEFAULT_BUFSIZE() {
-        return DEFAULT_BUFSIZE;
+    static size_t getDEFAULT_READ_BUFSIZE() {
+        return DEFAULT_READ_BUFSIZE;
+    }
+    
+    static void setDEFAULT_WRITE_BUFSIZE(size_t size) {
+        DEFAULT_WRITE_BUFSIZE = size;
+    }
+
+    static size_t getDEFAULT_WRITE_BUFSIZE() {
+        return DEFAULT_WRITE_BUFSIZE;
     }
 };
 

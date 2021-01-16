@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
         auto connection = server.accept();
         LOG_INFO(connection.getAddr().toStringAsIPV4());
         auto line = connection.readLine();
-        connection.write("hello\necho = ");
+        connection.write("hello echo = \n");
         connection.write(line);
         connection.flush();
     }

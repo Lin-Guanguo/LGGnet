@@ -8,13 +8,14 @@
 using namespace LGG;
 using namespace std;
 
-size_t ConnectionSocket::DEFAULT_BUFSIZE = 1<<12;
+size_t ConnectionSocket::DEFAULT_READ_BUFSIZE = 1<<12;
+size_t ConnectionSocket::DEFAULT_WRITE_BUFSIZE = 1<<12;
 
 ConnectionSocket::ConnectionSocket(int fd, SocketAddr addr) 
     : fd_(fd), 
     addr_(make_unique<SocketAddr>(addr)), 
-    readBuf_(make_unique<Buffer>(DEFAULT_BUFSIZE)),
-    writeBuf_(make_unique<Buffer>(DEFAULT_BUFSIZE))
+    readBuf_(make_unique<Buffer>(DEFAULT_READ_BUFSIZE)),
+    writeBuf_(make_unique<Buffer>(DEFAULT_WRITE_BUFSIZE))
 {
     readBuf_->readMode();
     writeBuf_->writeMode();
@@ -37,7 +38,8 @@ std::string_view ConnectionSocket::readLine() {
     return line;
 }
 
-void ConnectionSocket::resizeBuf(size_t newSize) { readBuf_->resize(newSize); }
+void ConnectionSocket::resizeReadBuf(size_t newSize) { readBuf_->resize(newSize); }
+void ConnectionSocket::resizeWriteBuf(size_t newSize) { writeBuf_->resize(newSize); }
 
 ssize_t ConnectionSocket::write(std::string_view str){
     if (writeBuf_->remainingSize() >= str.size()) {
