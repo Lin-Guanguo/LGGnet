@@ -1,6 +1,7 @@
-test/
 .vscode/
+.vs/
 build/
+out/
 
 *.out
 *.a
