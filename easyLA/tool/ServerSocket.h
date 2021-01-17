@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConnectionSocket.h"
+#include "SocketAPI.h"
 
 namespace LGG
 {
@@ -12,7 +13,12 @@ public:
 
     ~ServerSocket();
 
-    ConnectionSocket accept();
+    struct ConnectionAndAddress {
+        ConnectionSocket connection;
+        SocketAddr address;
+    };
+
+    ConnectionAndAddress accept();
 
     int getFd() { return fd_; }
 };

@@ -7,33 +7,35 @@
 namespace LGG
 {
 class Buffer;
-class SocketAddr;
 
 class ConnectionSocket : Noncopyable {
     //usually in readMode
     std::unique_ptr<Buffer> readBuf_;
     //usually in writeMode
     std::unique_ptr<Buffer> writeBuf_;
-    std::unique_ptr<SocketAddr> addr_;
     int fd_;
     static size_t DEFAULT_READ_BUFSIZE;
     static size_t DEFAULT_WRITE_BUFSIZE;
 public:
-    ConnectionSocket(int fd, SocketAddr addr);
+    ConnectionSocket(int fd);
 
+    //会自动进行依次flush();
     ~ConnectionSocket();
 
+    //读取文件描述符，将内容存到readBuf内
     ssize_t readFd();
 
     std::string_view readLine();
 
-    const SocketAddr& getAddr() const { return *addr_; }
-
+    //将信息写入缓存，写入文件描述符还需要依次flush
     ssize_t write(std::string_view str);
 
+    //将写入缓存的内容写到绑定的文件描述符内
     ssize_t flush();
+    //将写入缓存的内容写到绑定的文件描述符内
     ssize_t flush(size_t maxSize);
 
+    //flush with a additional string
     ssize_t flush(std::string_view str);
 
     void resizeReadBuf(size_t newSize);

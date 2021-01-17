@@ -11,9 +11,8 @@ using namespace std;
 size_t ConnectionSocket::DEFAULT_READ_BUFSIZE = 1<<12;
 size_t ConnectionSocket::DEFAULT_WRITE_BUFSIZE = 1<<12;
 
-ConnectionSocket::ConnectionSocket(int fd, SocketAddr addr) 
+ConnectionSocket::ConnectionSocket(int fd)
     : fd_(fd), 
-    addr_(make_unique<SocketAddr>(addr)), 
     readBuf_(make_unique<Buffer>(DEFAULT_READ_BUFSIZE)),
     writeBuf_(make_unique<Buffer>(DEFAULT_WRITE_BUFSIZE))
 {
@@ -21,7 +20,10 @@ ConnectionSocket::ConnectionSocket(int fd, SocketAddr addr)
     writeBuf_->writeMode();
 };
 
-ConnectionSocket::~ConnectionSocket() { SocketAPI::close(fd_); };
+ConnectionSocket::~ConnectionSocket() { 
+    flush();
+    SocketAPI::close(fd_); 
+};
 
 ssize_t ConnectionSocket::readFd() {
     readBuf_->writeMode();

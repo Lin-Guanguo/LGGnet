@@ -14,7 +14,7 @@ ServerSocket::ServerSocket(int port) {
 
 ServerSocket::~ServerSocket() { SocketAPI::close(fd_); };
 
-ConnectionSocket ServerSocket::accept() { 
+ServerSocket::ConnectionAndAddress ServerSocket::accept() {
     auto acceptRes = SocketAPI::accept(fd_); 
     return {acceptRes.fd, acceptRes.addr};
 }

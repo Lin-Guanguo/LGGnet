@@ -7,7 +7,7 @@
 namespace LGG
 {
 
-class Format : StaticClass{
+class Format : StaticClass {
 public:
     template<typename... T>
     static std::string concatToString(T... args){
