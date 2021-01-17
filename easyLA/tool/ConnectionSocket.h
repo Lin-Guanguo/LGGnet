@@ -17,7 +17,9 @@ class ConnectionSocket : Noncopyable {
     static size_t DEFAULT_READ_BUFSIZE;
     static size_t DEFAULT_WRITE_BUFSIZE;
 public:
-    ConnectionSocket(int fd);
+    ConnectionSocket(int fd) : ConnectionSocket(fd, DEFAULT_READ_BUFSIZE, DEFAULT_WRITE_BUFSIZE) {};
+
+    ConnectionSocket(int fd, size_t readBufSize, size_t writeBufSize);
 
     //会自动进行依次flush();
     ~ConnectionSocket();

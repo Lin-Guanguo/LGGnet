@@ -11,10 +11,10 @@ using namespace std;
 size_t ConnectionSocket::DEFAULT_READ_BUFSIZE = 1<<12;
 size_t ConnectionSocket::DEFAULT_WRITE_BUFSIZE = 1<<12;
 
-ConnectionSocket::ConnectionSocket(int fd)
+ConnectionSocket::ConnectionSocket(int fd, size_t readBufSize, size_t writeBufSize)
     : fd_(fd), 
-    readBuf_(make_unique<Buffer>(DEFAULT_READ_BUFSIZE)),
-    writeBuf_(make_unique<Buffer>(DEFAULT_WRITE_BUFSIZE))
+    readBuf_(make_unique<Buffer>(readBufSize)),
+    writeBuf_(make_unique<Buffer>(writeBufSize))
 {
     readBuf_->readMode();
     writeBuf_->writeMode();
