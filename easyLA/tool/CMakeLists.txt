@@ -8,6 +8,7 @@ add_library(${PROJECT_NAME} STATIC
     Buffer.cc
     ClientSocket.cc
     ConnectionSocket.cc
+    IOAPI.cc
     Process.cc
     ServerSocket.cc
     SocketAPI.cc
