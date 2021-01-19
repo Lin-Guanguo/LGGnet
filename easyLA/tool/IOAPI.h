@@ -23,7 +23,7 @@ public:
 		int n = 0;
 		(writevHelper(strs, iov, n), ...);
 		auto res = ::writev(fd, iov, iovcnt);
-		if(res < 0)  LOG_WARN("writev error return ", res, " ", ErrorAPI::errnoMessage(errno));
+		if(res < 0)  LOG_WARN("writev error return ", res, ErrorAPI::reportErrno(errno));
 		delete[] iov;
 		return res;
 	}

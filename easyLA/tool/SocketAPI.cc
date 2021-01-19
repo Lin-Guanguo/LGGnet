@@ -41,7 +41,7 @@ std::string SocketAddr::toStringAsIPV4() const {
     constexpr int bufsize = sizeof(sockaddr_storage);
     char buf[bufsize];
     auto p = this->getPtrAsIPV4();
-    ::inet_ntop(AF_INET, (const void*)&p->sin_addr, buf, bufsize);
+    AddrNetToPerform(AF_INET, (const void*)&p->sin_addr, buf, bufsize);
     return Format::concatToString(buf, ":", p->sin_port);
 }
 
@@ -49,7 +49,7 @@ std::string SocketAddr::toStringAsIPV6() const {
     constexpr int bufsize = sizeof(sockaddr_storage);
     char buf[bufsize];
     auto p = this->getPtrAsIPV6();
-    ::inet_ntop(AF_INET6, (const void*)&p->sin6_addr, buf, bufsize);
+    AddrNetToPerform(AF_INET6, (const void*)&p->sin6_addr, buf, bufsize);
     return Format::concatToString(buf, ":", p->sin6_port);
 }
 
@@ -64,29 +64,40 @@ std::string SocketAddr::toString() const {
     }
 }
 
-void SocketAddr::AddrPerformToNet(int family, const char* src, char* dest) {
+void SocketAddr::AddrPerformToNet(int family, const char* src, void* dest) {
     auto res = ::inet_pton(family, src, dest);
     if (res == 0)
         LOG_ERROR("src does not  contain a character string representing a valid network address in the specified address family")
     else if (res < 0)
-        LOG_ERROR("::inet_pton error return ", res, " errno=", errno, " ", ErrorAPI::errnoMessage(errno));
+        LOG_ERROR("::inet_pton error return ", res, ErrorAPI::reportErrno());
+}
+
+void SocketAddr::AddrNetToPerform(int family, const void* src, char* dest, socklen_t len) {
+    auto res = ::inet_ntop(family, src, dest, len);
+    if (res == 0)
+        LOG_ERROR("src does not  contain a character string representing a valid network address in the specified address family")
+    else if (res < 0)
+        LOG_ERROR("::inet_ntop error return ", res, ErrorAPI::reportErrno());
 }
 
 int SocketAPI::newSocket(int domain, int type){
     LOG_TRACE("new Socket")
     int fd = ::socket(domain, type, 0);
+    if (fd < 0) LOG_ERROR("SocketAPI::newSocket error return ", fd, ErrorAPI::reportErrno());
     return fd;
 }
 
 int SocketAPI::bind(int fd, const SocketAddr& addr){
     LOG_TRACE("bind")
     int res = ::bind(fd, addr.getPtr(), addr.getLen());
+    if (res < 0) LOG_ERROR("SocketAPI::bind error return ", res, ErrorAPI::reportErrno());
     return res;
 }
 
 int SocketAPI::listen(int fd){
     LOG_TRACE("listen")
     int res = ::listen(fd, DEFAULT_BACKLOG);
+    if (res < 0) LOG_ERROR("SocketAPI::listen error return ", res, ErrorAPI::reportErrno());
     return res;
 }
 
@@ -95,17 +106,20 @@ SocketAPI::AcceptRes SocketAPI::accept(int fd){
     AcceptRes res;
     socklen_t len;
     res.fd = ::accept(fd, res.addr.getPtr(), &len);
+    if (res.fd < 0) LOG_ERROR("SocketAPI::accept error return ", res.fd, ErrorAPI::reportErrno());
     return res;
 }
 
 int SocketAPI::close(int fd){
     LOG_TRACE("close")
     int res = ::close(fd);
+    if (res < 0) LOG_ERROR("SocketAPI::close error return ", res, ErrorAPI::reportErrno());
     return res;
 }
 
 int SocketAPI::connect(int fd, const SocketAddr& addr){
     LOG_TRACE("connection")
     int res = ::connect(fd, addr.getPtr(), addr.getLen());
+    if (res < 0) LOG_ERROR("SocketAPI::connect error return ", res, ErrorAPI::reportErrno());
     return res;
 }

@@ -35,7 +35,11 @@ public:
     std::string toString() const;
 
     //::inet_pton
-    static void AddrPerformToNet(int family, const char* src, char* dest);
+    static void AddrPerformToNet(int family, const char* src, void* dest);
+    
+    //::inet_ntop
+    static void AddrNetToPerform(int family, const void* src, char* dest, socklen_t len);
+
 };
     
 class SocketAPI : StaticClass {

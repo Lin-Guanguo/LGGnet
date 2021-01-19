@@ -25,6 +25,8 @@ int main(int argc, char** argv) {
         LOG_INFO(addr.toStringAsIPV4());
         auto line = connection.readLine();
         connection.write(line);
+        connection.write(" ");
+        connection.write(addr.toStringAsIPV4());
         connection.flush();
     }
 }
