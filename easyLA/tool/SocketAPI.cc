@@ -1,4 +1,5 @@
 #include "SocketAPI.h"
+#include "Error.h"
 #include "Log.h"
 #include <unistd.h>
 #include <string.h>
@@ -16,13 +17,13 @@ SocketAddr::SocketAddr(int family, std::string_view addr, unsigned short port) :
         switch(family){
             case AF_INET:{
                 auto p = this->getPtrAsIPV4();
-                ::inet_pton(AF_INET, addr.data(), &p->sin_addr);
+                AddrPerformToNet(AF_INET, addr.data(), &p->sin_addr);
                 p->sin_port = ::htons(port);
             }
                 break;
             case AF_INET6:{
                 auto p = this->getPtrAsIPV6();
-                ::inet_pton(AF_INET6, addr.data(), &p->sin6_addr);
+                AddrPerformToNet(AF_INET6, addr.data(), &p->sin6_addr);
                 p->sin6_port = ::htons(port);
             }
                 break;
@@ -61,6 +62,14 @@ std::string SocketAddr::toString() const {
         default:
             return "unkonwIPVersion";
     }
+}
+
+void SocketAddr::AddrPerformToNet(int family, const char* src, char* dest) {
+    auto res = ::inet_pton(family, src, dest);
+    if (res == 0)
+        LOG_ERROR("src does not  contain a character string representing a valid network address in the specified address family")
+    else if (res < 0)
+        LOG_ERROR("::inet_pton error return ", res, " errno=", errno, " ", ErrorAPI::errnoMessage(errno));
 }
 
 int SocketAPI::newSocket(int domain, int type){

@@ -33,6 +33,9 @@ public:
     std::string toStringAsIPV6() const;
 
     std::string toString() const;
+
+    //::inet_pton
+    static void AddrPerformToNet(int family, const char* src, char* dest);
 };
     
 class SocketAPI : StaticClass {
