@@ -44,14 +44,8 @@ void ConnectionSocket::resizeReadBuf(size_t newSize) { readBuf_->resize(newSize)
 void ConnectionSocket::resizeWriteBuf(size_t newSize) { writeBuf_->resize(newSize); }
 
 ssize_t ConnectionSocket::write(std::string_view str){
-    if (writeBuf_->remainingSize() >= str.size()) {
-        LOG_TRACE("connection ", this, " write buf put ", str);
-        return writeBuf_->put(str);
-    }
-    else {
-        LOG_TRACE("connection ", this, " writeBuf full, flush")
-        return flush(str);
-    }
+    LOG_TRACE("connection ", this, " write buf put ", str);
+    return writeBuf_->put(str);
 }
 
 ssize_t ConnectionSocket::flush() {

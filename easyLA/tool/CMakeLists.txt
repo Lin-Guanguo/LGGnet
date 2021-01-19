@@ -13,7 +13,7 @@ add_library(${PROJECT_NAME} STATIC
     ServerSocket.cc
     SocketAPI.cc
     Thread.cc
-)
+ "UDPSocket.h")
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
