@@ -4,6 +4,8 @@
 #include <string_view>
 #include <unistd.h>
 #include <sys/uio.h>
+#include "Log.h"
+#include "Error.h"
 
 namespace LGG
 {
@@ -11,7 +13,11 @@ namespace LGG
 class IOAPI : StaticClass {
 public:
 	static auto read(int fd, char* buf, size_t nbytes) {
-		return ::read(fd, buf, nbytes);
+		auto readCount = ::read(fd, buf, nbytes);
+		if (readCount < 0) {
+			LOG_ERROR("readError return ", readCount , " ", ErrorAPI::errnoMessage(readCount));
+		}
+		return readCount;
 	}
 
 	static auto write(int fd, const char* buf, size_t nbytes) {

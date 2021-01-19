@@ -35,7 +35,7 @@ ssize_t ConnectionSocket::readFd() {
 std::string_view ConnectionSocket::readLine() {
     std::string_view line;
     while((line = readBuf_->getLine()).size() == 0){
-        readFd();
+        if( readFd() <= 0) break;
     }
     return line;
 }
