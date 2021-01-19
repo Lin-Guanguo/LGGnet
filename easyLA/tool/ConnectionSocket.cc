@@ -78,3 +78,7 @@ ssize_t ConnectionSocket::flush(std::string_view str) {
     return res;
 }
 
+void ConnectionSocket::clearWriteBuf() {
+    writeBuf_->clear();
+}
+

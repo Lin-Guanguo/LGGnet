@@ -21,7 +21,7 @@ public:
 
     ConnectionSocket(int fd, size_t readBufSize, size_t writeBufSize);
 
-    //会自动进行依次flush();
+    //会自动进行一次flush();
     ~ConnectionSocket();
 
     //读取文件描述符，将内容存到readBuf内
@@ -39,6 +39,8 @@ public:
 
     //flush with a additional string
     ssize_t flush(std::string_view str);
+
+    void clearWriteBuf();
 
     void resizeReadBuf(size_t newSize);
 
