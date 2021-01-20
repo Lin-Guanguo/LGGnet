@@ -20,6 +20,8 @@ public:
 
     ConnectionAndAddress accept();
 
+    SocketAPI::FdAndAddress acceptFd();
+
     int getFd() { return fd_; }
 };
 

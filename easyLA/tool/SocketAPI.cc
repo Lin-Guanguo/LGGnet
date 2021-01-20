@@ -138,9 +138,9 @@ int SocketAPI::listen(int fd){
     return res;
 }
 
-SocketAPI::AcceptRes SocketAPI::accept(int fd){
+SocketAPI::FdAndAddress SocketAPI::accept(int fd){
     LOG_TRACE("accept")
-    AcceptRes res;
+    FdAndAddress res;
     res.fd = ::accept(fd, res.addr.getPtr(), &res.addr.getLen());
     if (res.fd < 0) LOG_ERROR("SocketAPI::accept error return ", res.fd, ErrorAPI::reportErrno());
     return res;

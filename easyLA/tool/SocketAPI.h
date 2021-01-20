@@ -65,12 +65,12 @@ public:
 
     static int listen(int fd);
 
-    struct AcceptRes {
+    struct FdAndAddress {
         int fd;
         SocketAddr addr;
     };
 
-    static AcceptRes accept(int fd);
+    static FdAndAddress accept(int fd);
 
     static int close(int fd);
 

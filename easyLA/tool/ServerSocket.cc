@@ -18,3 +18,7 @@ ServerSocket::ConnectionAndAddress ServerSocket::accept() {
     auto acceptRes = SocketAPI::accept(fd_); 
     return {acceptRes.fd, acceptRes.addr};
 }
+
+SocketAPI::FdAndAddress ServerSocket::acceptFd() {
+    return SocketAPI::accept(fd_);
+}
