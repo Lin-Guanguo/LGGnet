@@ -21,7 +21,7 @@ private:
         volatile bool detach_ = false;
         volatile bool started_ = false;
     public:
-        ThreadHandle(Runable&& task) : task_(std::move(task)) {
+        ThreadHandle(Runable&& task) : task_(std::forward<Runable>(task)) {
             LOG_TRACE("A Thread obj Constructor ");
         }
 
