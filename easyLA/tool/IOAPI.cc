@@ -4,6 +4,9 @@
 
 using namespace LGG;
 
+//return number of read
+//return 0 for EOF
+//retunr -1 for error
 ssize_t IOAPI::read(int fd, char* buf, size_t nbytes) {
 	auto readCount = ::read(fd, buf, nbytes);
 	if (readCount < 0) {

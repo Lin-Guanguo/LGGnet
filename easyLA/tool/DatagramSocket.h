@@ -5,7 +5,7 @@
 namespace LGG
 {
 
-class UPDSocket : Noncopyable {
+class Datagram : Noncopyable {
 public:
 	
 };

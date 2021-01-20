@@ -104,6 +104,10 @@ public:
         return put({s, len});
     }
 
+    //putFrom file describe
+    //return 0 for EOF
+    //return -1 for ::read error
+    //return -2 for buffer overflower
     ssize_t putFromFd(int fd);
 
     ssize_t getToFd(int fd) {

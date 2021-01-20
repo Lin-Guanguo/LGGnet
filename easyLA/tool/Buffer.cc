@@ -41,7 +41,7 @@ ssize_t Buffer::putFromFd(int fd) {
         return readCount;
     }else{
         LOG_WARN("Buffer ", this, " if full, when call putFromFd");
-        return -1;
+        return -2;
     }
 }
 
