@@ -49,7 +49,7 @@ ssize_t Buffer::getToFd(int fd, size_t maxBytes) {
     LOG_TRACE("get to fd ", fd);
     assert(mode_ == Mode::READ);
     auto n = remainingSize();
-    if (maxBytes >= remainingSize()) {
+    if (maxBytes >= n) {
         LOG_TRACE("write fd ", n, "bytes");
         auto writeCount = IOAPI::write(fd, position_, n);
         position_ += writeCount;
