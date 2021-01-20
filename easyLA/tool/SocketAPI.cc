@@ -19,12 +19,14 @@ SocketAddr::SocketAddr(int family, std::string_view addr, unsigned short port) :
                 auto p = this->getPtrAsIPV4();
                 AddrPerformToNet(AF_INET, addr.data(), &p->sin_addr);
                 p->sin_port = ::htons(port);
+                len_ = sizeof(sockaddr_in);
             }
                 break;
             case AF_INET6:{
                 auto p = this->getPtrAsIPV6();
                 AddrPerformToNet(AF_INET6, addr.data(), &p->sin6_addr);
                 p->sin6_port = ::htons(port);
+                len_ = sizeof(sockaddr_in6);
             }
                 break;
             default:

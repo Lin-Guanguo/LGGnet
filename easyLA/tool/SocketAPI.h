@@ -10,12 +10,19 @@ namespace LGG
 
 class SocketAddr {
     ::sockaddr_storage addr_;
+    socklen_t len_;
 public:
     SocketAddr();
 
     SocketAddr(int family, std::string_view addr, unsigned short port);
 
     SocketAddr(const ::sockaddr_storage& addr);
+
+    void setFamily() {};
+
+    void setAddress() {};
+
+    void setPort() {};
 
     sockaddr* getPtr() { return (sockaddr*)&addr_; }
     const sockaddr* getPtr() const { return (const sockaddr*)&addr_; }
@@ -26,7 +33,11 @@ public:
     sockaddr_in6* getPtrAsIPV6() { return (sockaddr_in6*)&addr_; }
     const sockaddr_in6* getPtrAsIPV6() const { return (const sockaddr_in6*)&addr_; }
 
-    socklen_t getLen() const { return sizeof(addr_); }
+    auto getFamily() const { return addr_.ss_family; }
+
+    socklen_t& getLen() { return len_; };
+    socklen_t getLen() const { return len_; };
+
 
     std::string toStringAsIPV4() const;
 
