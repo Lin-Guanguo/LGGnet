@@ -37,9 +37,6 @@ public:
     //将写入缓存的内容写到绑定的文件描述符内
     ssize_t flush(size_t maxSize);
 
-    //flush with a additional string
-    ssize_t flush(std::string_view str);
-
     void clearWriteBuf();
 
     void resizeReadBuf(size_t newSize);

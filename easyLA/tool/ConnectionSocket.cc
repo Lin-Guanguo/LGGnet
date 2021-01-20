@@ -62,16 +62,6 @@ ssize_t ConnectionSocket::flush(size_t maxSize) {
     return res;
 }
 
-ssize_t ConnectionSocket::flush(std::string_view str) {
-    writeBuf_->readMode();
-    
-    auto buf = writeBuf_->getAll();
-    auto res = IOAPI::writev(fd_, buf, str);
-    
-    writeBuf_->writeMode();
-    return res;
-}
-
 void ConnectionSocket::clearWriteBuf() {
     writeBuf_->clear();
 }
