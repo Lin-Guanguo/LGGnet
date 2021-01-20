@@ -21,16 +21,8 @@ private:
         volatile bool detach_ = false;
         volatile bool started_ = false;
     public:
-        using TaskReturnType = decltype(task_());
-
-        //task's return value's type could only be basetype or pointer
         ThreadHandle(Runable task) : task_(std::move(task)) {
-            LOG_TRACE("A Thread obj Constructor ", this, " returnType is ", typeid(TaskReturnType).name());
-            static_assert(
-                std::is_pointer<TaskReturnType>::value ||
-                std::is_integral<TaskReturnType>::value ||
-                std::is_floating_point<TaskReturnType>::value
-            );
+            LOG_TRACE("A Thread obj Constructor ");
         }
 
         ~ThreadHandle() {
@@ -55,12 +47,11 @@ private:
             started_ = true;
         }
 
-        TaskReturnType join() {
+        void join() {
             LOG_TRACE("join threadobj = ", this);
             assert(started_);
-            void* res;
-            ::pthread_join(id_, &res);
-            return *reinterpret_cast<TaskReturnType*>(&res);
+            ::pthread_join(id_, NULL);
+            return;
         }
 
     private:
@@ -71,9 +62,11 @@ private:
             if(thread.detach_){
                 ::pthread_detach(thread.id_);
             }
-            TaskReturnType res = thread.task_();
+
+            thread.task_();
+
             delete threadPP;
-            return *reinterpret_cast<void**>(&res);
+            return NULL;
         }
     };
 public:

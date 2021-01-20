@@ -36,9 +36,10 @@ using namespace LGG;
 int main(int argc, char** argv) {
     auto t = Thread::Create([]() {
         LOG_INFO("Hello");
-        return true;
+        return;
         });
     t->start();
-    LOG_INFO("join return ", t->join());
+    t->join();
+    LOG_INFO("join return ");
     ::sleep(4);
 }
