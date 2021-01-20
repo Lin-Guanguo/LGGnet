@@ -125,21 +125,21 @@ int SocketAPI::newSocket(int domain, int type){
 }
 
 int SocketAPI::bind(int fd, const SocketAddr& addr){
-    LOG_TRACE("bind")
+    LOG_TRACE("bind ", fd, " ", addr.toString());
     int res = ::bind(fd, addr.getPtr(), addr.getLen());
     if (res < 0) LOG_ERROR("SocketAPI::bind error return ", res, ErrorAPI::reportErrno());
     return res;
 }
 
 int SocketAPI::listen(int fd){
-    LOG_TRACE("listen")
+    LOG_TRACE("listen ", fd);
     int res = ::listen(fd, DEFAULT_BACKLOG);
     if (res < 0) LOG_ERROR("SocketAPI::listen error return ", res, ErrorAPI::reportErrno());
     return res;
 }
 
 SocketAPI::FdAndAddress SocketAPI::accept(int fd){
-    LOG_TRACE("accept")
+    LOG_TRACE("accept ", fd);
     FdAndAddress res;
     res.fd = ::accept(fd, res.addr.getPtr(), &res.addr.getLen());
     if (res.fd < 0) LOG_ERROR("SocketAPI::accept error return ", res.fd, ErrorAPI::reportErrno());
@@ -147,14 +147,14 @@ SocketAPI::FdAndAddress SocketAPI::accept(int fd){
 }
 
 int SocketAPI::close(int fd){
-    LOG_TRACE("close")
+    LOG_TRACE("close ", fd);
     int res = ::close(fd);
     if (res < 0) LOG_ERROR("SocketAPI::close error return ", res, ErrorAPI::reportErrno());
     return res;
 }
 
 int SocketAPI::connect(int fd, const SocketAddr& addr){
-    LOG_TRACE("connection")
+    LOG_TRACE("connection ", fd, " ", addr.toString());
     int res = ::connect(fd, addr.getPtr(), addr.getLen());
     if (res < 0) LOG_ERROR("SocketAPI::connect error return ", res, ErrorAPI::reportErrno());
     return res;
