@@ -12,31 +12,66 @@ SocketAddr::SocketAddr() {
     memset(&addr_, 0, sizeof(addr_));
 }
 
-SocketAddr::SocketAddr(int family, std::string_view addr, unsigned short port) : SocketAddr() {
-        this->getPtr()->sa_family = family;
-        switch(family){
-            case AF_INET:{
-                auto p = this->getPtrAsIPV4();
-                AddrPerformToNet(AF_INET, addr.data(), &p->sin_addr);
-                p->sin_port = ::htons(port);
-                len_ = sizeof(sockaddr_in);
-            }
-                break;
-            case AF_INET6:{
-                auto p = this->getPtrAsIPV6();
-                AddrPerformToNet(AF_INET6, addr.data(), &p->sin6_addr);
-                p->sin6_port = ::htons(port);
-                len_ = sizeof(sockaddr_in6);
-            }
-                break;
-            default:
-                LOG_WARN("unkonw domain used, can't init");
-        }
-        LOG_TRACE("new Socket Addr, domain = ", family);
+SocketAddr::SocketAddr(sa_family_t family, std::string_view addr, unsigned short port) : SocketAddr() {
+    setFamily(family);
+    setAddress(addr);
+    setPort(port);
 }
 
 SocketAddr::SocketAddr(const ::sockaddr_storage& addr) {
     memcpy(&addr_, &addr, sizeof(sockaddr_storage));
+    setFamily(addr.ss_family);
+}
+
+SocketAddr::SocketAddr(const SocketAddr& that) {
+    memcpy(&addr_, &that.addr_, sizeof(sockaddr_storage));
+    len_ = that.len_;
+}
+
+void SocketAddr::setFamily(sa_family_t family) {
+    addr_.ss_family = family;
+    switch (family) {
+    case AF_INET:
+        len_ = sizeof(sockaddr_in);
+        break;
+    case AF_INET6:
+        len_ = sizeof(sockaddr_in6);
+        break;
+    default:
+        LOG_WARN("unkonw family used, can't init socklen");
+    }
+}
+
+void SocketAddr::setAddress(std::string_view addr) {
+    switch (getFamily()) {
+        case AF_INET: {
+            auto p = this->getPtrAsIPV4();
+            AddrPerformToNet(AF_INET, addr.data(), &p->sin_addr);
+        } break;
+        case AF_INET6: {
+            auto p = this->getPtrAsIPV6();
+            AddrPerformToNet(AF_INET6, addr.data(), &p->sin6_addr);
+        } break;
+        default:
+            LOG_WARN("unkonw family used, can't setAddress");
+    }
+}
+
+void SocketAddr::setPort(unsigned short port) {
+    switch (getFamily()){
+        case AF_INET: {
+            auto p = this->getPtrAsIPV4();
+            p->sin_port = ::htons(port);
+            len_ = sizeof(sockaddr_in);
+        } break;
+        case AF_INET6: {
+            auto p = this->getPtrAsIPV6();
+            p->sin6_port = ::htons(port);
+            len_ = sizeof(sockaddr_in6);
+        } break;
+        default:
+            LOG_WARN("unkonw family used, can't setport");
+    }
 }
 
 std::string SocketAddr::toStringAsIPV4() const {
@@ -56,13 +91,13 @@ std::string SocketAddr::toStringAsIPV6() const {
 }
 
 std::string SocketAddr::toString() const { 
-    switch(addr_.ss_family){
+    switch(getFamily()){
         case AF_INET:
             return toStringAsIPV4();
         case AF_INET6:
             return toStringAsIPV6();
         default:
-            return "unkonwIPVersion";
+            return "unkonw family used, can't toString";
     }
 }
 
@@ -106,8 +141,7 @@ int SocketAPI::listen(int fd){
 SocketAPI::AcceptRes SocketAPI::accept(int fd){
     LOG_TRACE("accept")
     AcceptRes res;
-    socklen_t len;
-    res.fd = ::accept(fd, res.addr.getPtr(), &len);
+    res.fd = ::accept(fd, res.addr.getPtr(), &res.addr.getLen());
     if (res.fd < 0) LOG_ERROR("SocketAPI::accept error return ", res.fd, ErrorAPI::reportErrno());
     return res;
 }

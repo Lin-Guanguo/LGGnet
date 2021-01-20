@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     int len = sizeof(hello);
     for (;;) {
         auto [connection, addr] = server.accept();
-        LOG_INFO(addr.toStringAsIPV4());
+        LOG_INFO(addr.toString());
         auto line = connection.readLine();
         connection.write(line);
         connection.write(" ");

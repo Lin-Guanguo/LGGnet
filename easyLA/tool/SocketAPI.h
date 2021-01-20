@@ -14,15 +14,17 @@ class SocketAddr {
 public:
     SocketAddr();
 
-    SocketAddr(int family, std::string_view addr, unsigned short port);
+    SocketAddr(sa_family_t family, std::string_view addr, unsigned short port);
 
     SocketAddr(const ::sockaddr_storage& addr);
 
-    void setFamily() {};
+    SocketAddr(const SocketAddr& that);
 
-    void setAddress() {};
+    void setFamily(sa_family_t family);
 
-    void setPort() {};
+    void setAddress(std::string_view addr);
+
+    void setPort(unsigned short port);
 
     sockaddr* getPtr() { return (sockaddr*)&addr_; }
     const sockaddr* getPtr() const { return (const sockaddr*)&addr_; }
