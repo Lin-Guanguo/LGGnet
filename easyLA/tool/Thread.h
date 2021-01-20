@@ -14,7 +14,7 @@ namespace LGG
 class Thread : StaticClass {
 private:
     template<typename Runable>
-    class ThreadHandle : Noncopyable, public std::enable_shared_from_this<ThreadHandle<Runable>> {  
+    class ThreadHandle : Noncopyable, public std::enable_shared_from_this<ThreadHandle<Runable>> {
     private:
         pthread_t id_;
         Runable task_;
@@ -26,9 +26,11 @@ private:
         //task's return value's type could only be basetype or pointer
         ThreadHandle(Runable task) : task_(std::move(task)) {
             LOG_TRACE("A Thread obj Constructor ", this, " returnType is ", typeid(TaskReturnType).name());
-            static_assert(std::is_pointer<TaskReturnType>::value || 
-                    std::is_integral<TaskReturnType>::value || 
-                    std::is_floating_point<TaskReturnType>::value);
+            static_assert(
+                std::is_pointer<TaskReturnType>::value ||
+                std::is_integral<TaskReturnType>::value ||
+                std::is_floating_point<TaskReturnType>::value
+            );
         }
 
         ~ThreadHandle() {
@@ -54,7 +56,7 @@ private:
         }
 
         TaskReturnType join() {
-            LOG_TRACE("join id = ", ::pthread_self());
+            LOG_TRACE("join threadobj = ", this);
             assert(started_);
             void* res;
             ::pthread_join(id_, &res);
@@ -63,7 +65,7 @@ private:
 
     private:
         static void* pthreadRunner(void* p) {
-            LOG_TRACE("subthread run id = ", ::pthread_self());
+            LOG_TRACE("subthread run threadid = ", ::pthread_self());
             auto threadPP = (std::shared_ptr<ThreadHandle<Runable>>*)p;
             auto& thread = **threadPP;
             if(thread.detach_){
