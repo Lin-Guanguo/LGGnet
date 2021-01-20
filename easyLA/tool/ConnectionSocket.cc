@@ -20,8 +20,18 @@ ConnectionSocket::ConnectionSocket(int fd, size_t readBufSize, size_t writeBufSi
     writeBuf_->writeMode();
 };
 
+ConnectionSocket::ConnectionSocket(ConnectionSocket&& that)
+    : readBuf_(std::move(that.readBuf_)),
+    writeBuf_(std::move(that.writeBuf_)),
+    fd_(that.fd_)
+{
+    //LOG_TRACE("ConnectionSocket move this = ", this)
+    that.fd_ = -1;
+}
+
 ConnectionSocket::~ConnectionSocket() { 
-    flush();
+    if (fd_ < 0)
+        return;
     SocketAPI::close(fd_); 
 };
 

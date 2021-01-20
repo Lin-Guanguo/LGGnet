@@ -23,6 +23,17 @@ public:
 
     Buffer(size_t size);
 
+    Buffer(Buffer&& that) 
+        : byteArray_(that.byteArray_),
+        position_(that.position_),
+        limit_(that.limit_),
+        capital_(that.capital_),
+        mark_(that.mark_),
+        mode_(that.mode_)
+    {
+        that.byteArray_ = that.position_ = that.limit_ = that.capital_ = nullptr;
+    }
+
     ~Buffer();
 
     enum Mode : short {

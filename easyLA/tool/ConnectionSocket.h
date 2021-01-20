@@ -21,6 +21,8 @@ public:
 
     ConnectionSocket(int fd, size_t readBufSize, size_t writeBufSize);
 
+    ConnectionSocket(ConnectionSocket&& that);
+
     //会自动进行一次flush();
     ~ConnectionSocket();
 

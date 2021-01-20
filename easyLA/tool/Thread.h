@@ -21,7 +21,7 @@ private:
         volatile bool detach_ = false;
         volatile bool started_ = false;
     public:
-        ThreadHandle(Runable task) : task_(std::move(task)) {
+        ThreadHandle(Runable&& task) : task_(std::move(task)) {
             LOG_TRACE("A Thread obj Constructor ");
         }
 
@@ -71,8 +71,8 @@ private:
     };
 public:
     template<typename Runable>
-    static std::shared_ptr<ThreadHandle<Runable>> Create(const Runable& task) {
-        return std::make_shared<ThreadHandle<Runable>>(task);
+    static std::shared_ptr<ThreadHandle<Runable>> Create(Runable&& task) {
+        return std::make_shared<ThreadHandle<Runable>>(std::forward<Runable>(task));
     }
 
     static pthread_t currentThreadId() { return ::pthread_self(); }
