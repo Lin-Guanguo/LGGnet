@@ -24,7 +24,7 @@ private:
         using TaskReturnType = decltype(task_());
 
         //task's return value's type could only be basetype or pointer
-        ThreadHandle(const Runable& task) : task_(task) {
+        ThreadHandle(Runable task) : task_(std::move(task)) {
             LOG_TRACE("A Thread obj Constructor ", this, " returnType is ", typeid(TaskReturnType).name());
             static_assert(std::is_pointer<TaskReturnType>::value || 
                     std::is_integral<TaskReturnType>::value || 
